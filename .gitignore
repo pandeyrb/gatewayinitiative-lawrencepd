@@ -5,4 +5,6 @@ cache
 config.json
 !checkpoint10_combined_data.csv
 !liquor_retail_geocoded.csv
+!school_geocoded.csv
+!places_of_worship_geocoded.csv
 tl_2024_25_tractdata/
