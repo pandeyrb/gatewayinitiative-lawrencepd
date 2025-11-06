@@ -10,6 +10,7 @@ from streamlit_folium import st_folium
 from pathlib import Path
 import os
 import json
+from folium import Element
 
 
 st.set_page_config(page_title="Lawrence Police Incidents Dashboard", layout="wide")
@@ -318,6 +319,36 @@ with tab3:
 
     liquor_df = load_liquor_data()
 
+    # -----------------------------
+    #  LOAD SCHOOL DATA
+    # -----------------------------
+    @st.cache_data
+    def load_school_data():
+        csv_path = os.path.join(os.path.dirname(__file__), "school_geocoded.csv")
+        return pd.read_csv(csv_path).dropna(subset=["latitude", "longitude"])
+
+    school_df = load_school_data()
+
+    # -----------------------------
+    #  LOAD PLACES OF WORSHIP DATA
+    # -----------------------------
+    @st.cache_data
+    def load_worship_data():
+        csv_path = os.path.join(os.path.dirname(__file__), "places_of_worship_geocoded.csv")
+        return pd.read_csv(csv_path).dropna(subset=["latitude", "longitude"])
+
+    pow_df = load_worship_data()
+
+    # -----------------------------
+    #  LOAD RECREATIONAL SPACES DATA
+    # -----------------------------
+    # @st.cache_data
+    # def load_rec_data():
+    #     csv_path = os.path.join(os.path.dirname(__file__), "recreation_spaces_geocoded.csv")
+    #     return pd.read_csv(csv_path).dropna(subset=["latitude", "longitude"])
+
+    # rec_df = load_rec_data()
+
 
     incident_types = ["All"] + sorted(data['category'].dropna().unique())
 
@@ -368,11 +399,12 @@ with tab3:
                 poi_types = [
                     "All", "Bar or Lounge", "Convenience Store", 
                     "Grocery Store w/ Liquor", "Liquor Store", 
-                    "Nightclub", "Restaurant", "Social Club"
+                    "Nightclub", "Restaurant", "Social Club", 
+                    "Schools", "Places of Worship"#, "Recreational Spaces"
                 ]
                 poi_types_with_all = ["All"] + poi_types
 
-                selected_poi_types = st.multiselect("Choose POI Types (*Note: Liquor vendors only):", poi_types, default=["All"])
+                selected_poi_types = st.multiselect("Choose POI Types (*Note: Liquor vendors only):", poi_types, default=["Schools"])
 
                 if "All" in selected_poi_types:
                     selected_poi_types = poi_types
@@ -611,43 +643,91 @@ with tab3:
             # -----------------------------
             # 🧼 Define POI marker style
             # -----------------------------
+            # Neutral PNGs for Streamlit-safe icons
+            school_icon_url = "https://cdn-icons-png.flaticon.com/512/3135/3135810.png"  
+            worship_icon_url = "https://cdn-icons-png.flaticon.com/512/4258/4258470.png" 
+            # rec_icon_url = "https://cdn-icons-png.flaticon.com/512/2169/2169407.png"  
+
+
             poi_style_map = {
-                "Restaurant": {"color": "black", "icon": "cutlery"},
-                "Liquor Store": {"color": "black", "icon": "shopping-cart"},
-                "Bar or Lounge": {"color": "black", "icon": "glass"},
-                "Nightclub": {"color": "black", "icon": "music"},
-                "Grocery Store w/ Liquor": {"color": "black", "icon": "shopping-cart"},
-                "Convenience Store": {"color": "black", "icon": "shopping-cart"},
-                "Social Club": {"color": "black", "icon": "star"}
+                "Restaurant": {"color": "black", "icon": "cutlery"},#, "prefix": "glyphicon"},
+                "Liquor Store": {"color": "black", "icon": "shopping-cart"},# "prefix": "glyphicon"},
+                "Bar or Lounge": {"color": "black", "icon": "glass"},# "prefix": "glyphicon"},
+                "Nightclub": {"color": "black", "icon": "music"}, #"prefix": "glyphicon"},
+                "Grocery Store w/ Liquor": {"color": "black", "icon": "shopping-cart"}, #"prefix": "glyphicon"},
+                "Convenience Store": {"color": "black", "icon": "shopping-cart"}, # "prefix": "glyphicon"},
+                "Social Club": {"color": "black", "icon": "star"}, #"prefix": "glyphicon"},
+                "Schools": {"color": "black", "icon_url": school_icon_url}, #"prefix": "glyphicon"},
+                "Places of Worship": {"color": "black", "icon_url": worship_icon_url}, #"prefix": "glyphicon"},
+                # "Recreational Spaces": {"icon_url": rec_icon_url}
             }
+
 
             # -----------------------------
             # 📍 Add POI Markers to Map
             # -----------------------------
             if show_poi and selected_poi_types:
                 for poi_type in selected_poi_types:
-                    df = liquor_df[liquor_df["TYPE"] == poi_type]
-                    style = poi_style_map.get(poi_type, {"color": "gray", "icon": "info-sign"})
+                    if poi_type == "Schools":
+                        df = school_df
+                        for _, row in df.iterrows():
+                            folium.Marker(
+                                location=[row["latitude"], row["longitude"]],
+                                popup=f'{row["NAME"]} ({poi_type})',
+                                tooltip=row["NAME"],
+                                icon=folium.CustomIcon(poi_style_map[poi_type]["icon_url"], icon_size=(20, 20))
+                            ).add_to(m)
+                        continue
 
+                    if poi_type == "Places of Worship":
+                        df = pow_df
+                        for _, row in df.iterrows():
+                            folium.Marker(
+                                location=[row["latitude"], row["longitude"]],
+                                popup=f'{row["NAME"]} ({poi_type})',
+                                tooltip=row["NAME"],
+                                icon=folium.CustomIcon(poi_style_map[poi_type]["icon_url"], icon_size=(30, 30))
+                            ).add_to(m)
+                        continue
+
+                    
+
+                    # all others remain the same
+                    df = liquor_df[liquor_df["TYPE"] == poi_type]
+                    style = poi_style_map.get(poi_type, {"color": "gray", "icon": "info-sign"})#, "prefix": "glyphicon"})
                     for _, row in df.iterrows():
                         folium.Marker(
                             location=[row["latitude"], row["longitude"]],
                             popup=f'{row["NAME"]} ({poi_type})',
                             tooltip=row["NAME"],
-                            icon=folium.Icon(color=style["color"], icon=style["icon"])
+                            icon=folium.Icon(color=style["color"], icon=style["icon"])#, prefix=style["prefix"])
                         ).add_to(m)
-            
+                
                 # -----------------------------
                 # 🧾 POI Legend
                 # -----------------------------
                 legend_lines = ["<b>POI Legend</b><br>"]
                 for poi_type in selected_poi_types:
-                    style = poi_style_map.get(poi_type, {})
-                    color = style.get("color", "gray")
-                    icon = style.get("icon", "info-sign")
-                    legend_lines.append(
-                    f'<i class="glyphicon glyphicon-{icon}" style="color:{color}"></i> {poi_type}<br>'
-                    )
+                    if poi_type == "Schools":
+                        legend_lines.append(f'<img src="{school_icon_url}" width="14"> Schools<br>')
+                    elif poi_type == "Places of Worship":
+                        legend_lines.append(f'<img src="{worship_icon_url}" width="16"> Places of Worship<br>')
+                    
+                    else:
+                        style = poi_style_map.get(poi_type, {})
+                        color = style.get("color", "gray")
+                        icon = style.get("icon", "info-sign")
+                        legend_lines.append(f'<i class="glyphicon glyphicon-{icon}" style="color:{color}"></i> {poi_type}<br>')
+
+
+                # legend_lines = ["<b>POI Legend</b><br>"]
+                # for poi_type in selected_poi_types:
+                #     style = poi_style_map.get(poi_type, {})
+                #     color = style.get("color", "gray")
+                #     icon = style.get("icon", "info-sign")
+                #     legend_lines.append(
+                #     f'<i class="glyphicon glyphicon-{icon}" style="color:{color}"></i> {poi_type}<br>'
+                #     )
 
                 poi_legend_html = f"""
                 <div style="
