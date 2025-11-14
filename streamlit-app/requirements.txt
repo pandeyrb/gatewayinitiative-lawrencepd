@@ -4,3 +4,5 @@ numpy
 folium
 streamlit_folium
 pathlib
+geopandas
+shapely
