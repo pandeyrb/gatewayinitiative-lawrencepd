@@ -1,7 +1,0 @@
-[theme]
-base = "light"
-primaryColor = "#0079c1"           # ArcGIS-ish blue
-backgroundColor = "#f5fafa"        # very light teal/grey
-secondaryBackgroundColor = "#ffffff"
-textColor = "#222222"
-font = "sans serif"
