@@ -382,12 +382,13 @@ with tab3:
 
                 secondary_choice = st.selectbox(
                     "Show Secondary Data",
-                    ["None", "Poverty Data", "Median Household Income", "Unemployment Data"],
+                    ["None", "Poverty Data", "Median Household Income", "Unemployment Data", "Median Age"],
                     index=0
                 )
                 poverty_layer_enabled = secondary_choice == "Poverty Data"
                 unemployment_layer_enabled = secondary_choice == "Unemployment Data"
                 median_household_income_layer_enabled = secondary_choice == "Median Household Income"
+                median_age_layer_enabled = secondary_choice == "Median Age"
 
             # --- HOTSPOTS ---
             with st.expander("Hotspot Map", expanded=False):
@@ -697,10 +698,129 @@ with tab3:
                     """
                     m.get_root().html.add_child(folium.Element(median_household_income_data_legend_html))
 
+            # -------------------------------------------------------
+            # Add Median Household Income Choropleth Layer
+            # -------------------------------------------------------
+            if median_household_income_layer_enabled:
+                    median_household_income_path = os.path.join(os.path.dirname(__file__), "boundaries", "household_income_boundary.geojson")
+                    with open(median_household_income_path, "r") as f:
+                        median_household_income_data = json.load(f)
 
+                    # build DataFrame using tract and Estimate
+                    median_household_income_df = pd.DataFrame([
+                        {
+                            "tract": feature["properties"].get("tract"),
+                            "Estimate": feature["properties"].get("Estimate")
+                        }
+                        for feature in median_household_income_data.get("features", [])
+                        if feature.get("properties")
+                        and feature["properties"].get("tract")
+                        and feature["properties"].get("Estimate") is not None
+                    ])
 
+                    folium.Choropleth(
+                        geo_data=median_household_income_data,
+                        name="Median Household Income",
+                        data=median_household_income_df,
+                        columns=["tract", "Estimate"],
+                        key_on="feature.properties.tract",
+                        fill_color="PuBu", 
+                        fill_opacity=0.7,
+                        line_opacity=0.2,
+                        legend_name="Median Household Income (%)",
+                    ).add_to(m)
 
+                    # ----------------------------- 
+                    # Median Household Income Legend (USD)
+                    # -----------------------------
+                    median_household_income_data_legend_html = """
+                    <div style="
+                        position: fixed; 
+                        bottom: 40px; 
+                        left: 40px; 
+                        z-index:9999; 
+                        background-color: white; 
+                        padding: 10px; 
+                        border:2px solid gray; 
+                        border-radius: 5px;
+                        font-size: 14px;
+                        box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+                    ">
+                        <strong style="color: black;">Median Household Income (USD)</strong><br>
+                        <span style="color: black;">
+                            <i style="background:#cb181d;width:20px;height:10px;display:inline-block;"></i> $76k to $88k<br>
+                            <i style="background:#fb6a4a;width:20px;height:10px;display:inline-block;"></i> $61k to $76k<br>
+                            <i style="background:#fc9272;width:20px;height:10px;display:inline-block;"></i> $41k to $61k<br>
+                            <i style="background:#fcbba1;width:20px;height:10px;display:inline-block;"></i> $33k to $41k<br>
+                            <i style="background:#fff5f0;width:20px;height:10px;display:inline-block;"></i> $23k to $33k<br>
+                        </span>
+                    </div>
+                    """
+                    m.get_root().html.add_child(folium.Element(median_household_income_data_legend_html))
 
+            # -------------------------------------------------------
+            # Add Median Age Choropleth Layer  # NEW
+            # -------------------------------------------------------
+            if median_age_layer_enabled:  # NEW
+                    median_age_path = os.path.join(  # NEW
+                        os.path.dirname(__file__),  # NEW
+                        "boundaries",                # NEW
+                        "median_age_boundary.geojson"  # NEW
+                    )  # NEW
+                    with open(median_age_path, "r") as f:  # NEW
+                        median_age_data = json.load(f)  # NEW
+
+                    # build DataFrame using tract and MedianAge  # NEW
+                    median_age_df = pd.DataFrame([  # NEW
+                        {  # NEW
+                            "tract": feature["properties"].get("tract"),  # NEW
+                            "MedianAge": feature["properties"].get("MedianAge"),  # NEW
+                        }  # NEW
+                        for feature in median_age_data.get("features", [])  # NEW
+                        if feature.get("properties")  # NEW
+                        and feature["properties"].get("tract")  # NEW
+                        and feature["properties"].get("MedianAge") is not None  # NEW
+                    ])  # NEW
+
+                    folium.Choropleth(  # NEW
+                        geo_data=median_age_data,  # NEW
+                        name="Median Age",  # NEW
+                        data=median_age_df,  # NEW
+                        columns=["tract", "MedianAge"],  # NEW
+                        key_on="feature.properties.tract",  # NEW
+                        fill_color="YlOrRd",  # NEW  (distinct palette) 
+                        fill_opacity=0.7,  # NEW
+                        line_opacity=0.2,  # NEW
+                        legend_name="Median Age (years)",  # NEW
+                    ).add_to(m)  # NEW
+
+                    # -----------------------------  # NEW
+                    # Median Age Legend (Years)      # NEW
+                    # -----------------------------  # NEW
+                    median_age_legend_html = """  # NEW
+                    <div style="
+                        position: fixed; 
+                        bottom: 40px; 
+                        left: 40px; 
+                        z-index:9999; 
+                        background-color: white; 
+                        padding: 10px; 
+                        border:2px solid gray; 
+                        border-radius: 5px;
+                        font-size: 14px;
+                        box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+                    ">
+                        <strong style="color: black;">Median Age (years)</strong><br>
+                        <span style="color: black;">
+                            <i style="background:#ffffcc;width:20px;height:10px;display:inline-block;"></i> 20 – 30<br>
+                            <i style="background:#ffeda0;width:20px;height:10px;display:inline-block;"></i> 30 – 35<br>
+                            <i style="background:#feb24c;width:20px;height:10px;display:inline-block;"></i> 35 – 40<br>
+                            <i style="background:#fd8d3c;width:20px;height:10px;display:inline-block;"></i> 40 – 45<br>
+                            <i style="background:#f03b20;width:20px;height:10px;display:inline-block;"></i> 45+<br>
+                        </span>
+                    </div>
+                    """  # NEW
+                    m.get_root().html.add_child(folium.Element(median_age_legend_html))  # NEW
 
             # -----------------------------
             # 📍 POINTS OF INTEREST
