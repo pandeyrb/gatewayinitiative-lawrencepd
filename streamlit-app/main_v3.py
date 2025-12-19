@@ -565,12 +565,12 @@ with tab3:
                     ">
                         <strong style="color: black;">Poverty Estimate (%)</strong><br>
                         <span style="color: black;">
-                            <i style="background:#f7fbff;width:20px;height:10px;display:inline-block;"></i> 0-8%<br>
-                            <i style="background:#deebf7;width:20px;height:10px;display:inline-block;"></i> 8-15.6%<br>
-                            <i style="background:#c6dbef;width:20px;height:10px;display:inline-block;"></i> 15.6-20.3%<br>
-                            <i style="background:#9ecae1;width:20px;height:10px;display:inline-block;"></i> 20.3-28.4%<br>
-                            <i style="background:#6baed6;width:20px;height:10px;display:inline-block;"></i> 28.4-36.7%<br>
-                            <i style="background:#3182bd;width:20px;height:10px;display:inline-block;"></i> 36.7%+
+                            <i style="background:#f7fbff;width:20px;height:10px;display:inline-block;"></i> 0 - 8%<br>
+                            <i style="background:#deebf7;width:20px;height:10px;display:inline-block;"></i> 8 - 16%<br>
+                            <i style="background:#c6dbef;width:20px;height:10px;display:inline-block;"></i> 16 - 20%<br>
+                            <i style="background:#9ecae1;width:20px;height:10px;display:inline-block;"></i> 20 - 28%<br>
+                            <i style="background:#6baed6;width:20px;height:10px;display:inline-block;"></i> 28 - 37%<br>
+                            <i style="background:#3182bd;width:20px;height:10px;display:inline-block;"></i> 37%+
                         </span>
                     </div>
                     """
@@ -629,10 +629,10 @@ with tab3:
                         <strong style="color: black;">Unemployment Rate (%)</strong><br>
                         <span style="color: black;">
                             <i style="background:#f7fbff;width:20px;height:10px;display:inline-block;"></i> 2.3%<br>
-                            <i style="background:#deebf7;width:20px;height:10px;display:inline-block;"></i> 2.4 – 5.2%<br>
-                            <i style="background:#9ecae1;width:20px;height:10px;display:inline-block;"></i> 5.3 – 8.3%<br>
-                            <i style="background:#6baed6;width:20px;height:10px;display:inline-block;"></i> 8.4 – 10.4%<br>
-                            <i style="background:#3182bd;width:20px;height:10px;display:inline-block;"></i> 10.5 – 12.8%<br>
+                            <i style="background:#deebf7;width:20px;height:10px;display:inline-block;"></i> 2.4 - 5.2%<br>
+                            <i style="background:#9ecae1;width:20px;height:10px;display:inline-block;"></i> 5.3 - 8.3%<br>
+                            <i style="background:#6baed6;width:20px;height:10px;display:inline-block;"></i> 8.4 - 10.4%<br>
+                            <i style="background:#3182bd;width:20px;height:10px;display:inline-block;"></i> 10.5 - 12.8%<br>
                         </span>
 
                     </div>
@@ -689,11 +689,11 @@ with tab3:
                     ">
                         <strong style="color: black;">Median Household Income (USD)</strong><br>
                         <span style="color: black;">
-                            <i style="background:#08519c;width:20px;height:10px;display:inline-block;"></i> $76k to $88k<br>
-                            <i style="background:#3182bd;width:20px;height:10px;display:inline-block;"></i> $61k to $76k<br>
-                            <i style="background:#6baed6;width:20px;height:10px;display:inline-block;"></i> $41k to $61k<br>
-                            <i style="background:#9ecae1;width:20px;height:10px;display:inline-block;"></i> $33k to $41k<br>
-                            <i style="background:#deebf7;width:20px;height:10px;display:inline-block;"></i> $23k to $33k<br>
+                            <i style="background:#deebf7;width:20px;height:10px;display:inline-block;"></i> $23k - $33k<br>
+                            <i style="background:#9ecae1;width:20px;height:10px;display:inline-block;"></i> $33k - $41k<br>
+                            <i style="background:#6baed6;width:20px;height:10px;display:inline-block;"></i> $41k - $61k<br>
+                            <i style="background:#3182bd;width:20px;height:10px;display:inline-block;"></i> $61k - $76k<br>
+                            <i style="background:#08519c;width:20px;height:10px;display:inline-block;"></i> $76k - $88k<br>
                         </span>
                     </div>
                     """
@@ -753,12 +753,12 @@ with tab3:
                     ">
                         <strong style="color: black;">Median Age (years)</strong><br>
                         <span style="color: black;">
-                            <i style="background:#f7fbff;width:20px;height:10px;display:inline-block;"></i> 28 – 32<br>
-                            <i style="background:#deebf7;width:20px;height:10px;display:inline-block;"></i> 32 – 36<br>
-                            <i style="background:#9ecae1;width:20px;height:10px;display:inline-block;"></i> 36 – 41<br>
-                            <i style="background:#6baed6;width:20px;height:10px;display:inline-block;"></i> 41 – 45<br>
-                            <i style="background:#3182bd;width:20px;height:10px;display:inline-block;"></i> 45 – 50<br>
-                            <i style="background:#08519c;width:20px;height:10px;display:inline-block;"></i> 50 – 54<br>
+                            <i style="background:#f7fbff;width:20px;height:10px;display:inline-block;"></i> 28 - 32<br>
+                            <i style="background:#deebf7;width:20px;height:10px;display:inline-block;"></i> 32 - 36<br>
+                            <i style="background:#9ecae1;width:20px;height:10px;display:inline-block;"></i> 36 - 41<br>
+                            <i style="background:#6baed6;width:20px;height:10px;display:inline-block;"></i> 41 - 45<br>
+                            <i style="background:#3182bd;width:20px;height:10px;display:inline-block;"></i> 45 - 50<br>
+                            <i style="background:#08519c;width:20px;height:10px;display:inline-block;"></i> 50 - 54<br>
                         </span>
                     </div>
                     """
