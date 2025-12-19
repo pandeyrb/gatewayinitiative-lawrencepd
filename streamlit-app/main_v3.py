@@ -688,11 +688,11 @@ with tab3:
                     ">
                         <strong style="color: black;">Median Household Income (USD)</strong><br>
                         <span style="color: black;">
-                            <i style="background:#cb181d;width:20px;height:10px;display:inline-block;"></i> $76k to $88k<br>
-                            <i style="background:#fb6a4a;width:20px;height:10px;display:inline-block;"></i> $61k to $76k<br>
-                            <i style="background:#fc9272;width:20px;height:10px;display:inline-block;"></i> $41k to $61k<br>
-                            <i style="background:#fcbba1;width:20px;height:10px;display:inline-block;"></i> $33k to $41k<br>
-                            <i style="background:#fff5f0;width:20px;height:10px;display:inline-block;"></i> $23k to $33k<br>
+                            <i style="background:#08519c;width:20px;height:10px;display:inline-block;"></i> $76k to $88k<br>
+                            <i style="background:#3182bd;width:20px;height:10px;display:inline-block;"></i> $61k to $76k<br>
+                            <i style="background:#6baed6;width:20px;height:10px;display:inline-block;"></i> $41k to $61k<br>
+                            <i style="background:#9ecae1;width:20px;height:10px;display:inline-block;"></i> $33k to $41k<br>
+                            <i style="background:#deebf7;width:20px;height:10px;display:inline-block;"></i> $23k to $33k<br>
                         </span>
                     </div>
                     """
