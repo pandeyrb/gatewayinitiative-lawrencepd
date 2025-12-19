@@ -729,7 +729,7 @@ with tab3:
                         data=median_age_df,
                         columns=["tract", "MedianAge"],
                         key_on="feature.properties.tract", 
-                        fill_color="YlOrRd",
+                        fill_color="PuBu",
                         fill_opacity=0.7,
                         line_opacity=0.2,
                         legend_name="Median Age (years)",
@@ -753,11 +753,12 @@ with tab3:
                     ">
                         <strong style="color: black;">Median Age (years)</strong><br>
                         <span style="color: black;">
-                            <i style="background:#ffffcc;width:20px;height:10px;display:inline-block;"></i> 20 – 30<br>
-                            <i style="background:#ffeda0;width:20px;height:10px;display:inline-block;"></i> 30 – 35<br>
-                            <i style="background:#feb24c;width:20px;height:10px;display:inline-block;"></i> 35 – 40<br>
-                            <i style="background:#fd8d3c;width:20px;height:10px;display:inline-block;"></i> 40 – 45<br>
-                            <i style="background:#f03b20;width:20px;height:10px;display:inline-block;"></i> 45+<br>
+                            <i style="background:#f7fbff;width:20px;height:10px;display:inline-block;"></i> 28 – 32<br>
+                            <i style="background:#deebf7;width:20px;height:10px;display:inline-block;"></i> 32 – 36<br>
+                            <i style="background:#9ecae1;width:20px;height:10px;display:inline-block;"></i> 36 – 41<br>
+                            <i style="background:#6baed6;width:20px;height:10px;display:inline-block;"></i> 41 – 45<br>
+                            <i style="background:#3182bd;width:20px;height:10px;display:inline-block;"></i> 45 – 50<br>
+                            <i style="background:#08519c;width:20px;height:10px;display:inline-block;"></i> 50 – 54<br>
                         </span>
                     </div>
                     """
