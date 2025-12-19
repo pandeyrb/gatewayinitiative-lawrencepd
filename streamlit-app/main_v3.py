@@ -759,45 +759,45 @@ with tab3:
                     m.get_root().html.add_child(folium.Element(median_household_income_data_legend_html))
 
             # -------------------------------------------------------
-            # Add Median Age Choropleth Layer  # NEW
+            # Add Median Age Choropleth Layer
             # -------------------------------------------------------
-            if median_age_layer_enabled:  # NEW
-                    median_age_path = os.path.join(  # NEW
-                        os.path.dirname(__file__),  # NEW
-                        "boundaries",                # NEW
-                        "median_age_boundary.geojson"  # NEW
-                    )  # NEW
-                    with open(median_age_path, "r") as f:  # NEW
-                        median_age_data = json.load(f)  # NEW
+            if median_age_layer_enabled:
+                    median_age_path = os.path.join(
+                        os.path.dirname(__file__),
+                        "boundaries",
+                        "median_age_boundary.geojson"
+                    )  
+                    with open(median_age_path, "r") as f:
+                        median_age_data = json.load(f)
 
-                    # build DataFrame using tract and MedianAge  # NEW
-                    median_age_df = pd.DataFrame([  # NEW
-                        {  # NEW
-                            "tract": feature["properties"].get("tract"),  # NEW
-                            "MedianAge": feature["properties"].get("MedianAge"),  # NEW
-                        }  # NEW
-                        for feature in median_age_data.get("features", [])  # NEW
-                        if feature.get("properties")  # NEW
-                        and feature["properties"].get("tract")  # NEW
-                        and feature["properties"].get("MedianAge") is not None  # NEW
-                    ])  # NEW
+                    # build DataFrame using tract and MedianAge
+                    median_age_df = pd.DataFrame([
+                        {  
+                            "tract": feature["properties"].get("tract"),
+                            "MedianAge": feature["properties"].get("MedianAge"),
+                        }
+                        for feature in median_age_data.get("features", [])
+                        if feature.get("properties")
+                        and feature["properties"].get("tract")
+                        and feature["properties"].get("MedianAge") is not None
+                    ])  
 
-                    folium.Choropleth(  # NEW
-                        geo_data=median_age_data,  # NEW
-                        name="Median Age",  # NEW
-                        data=median_age_df,  # NEW
-                        columns=["tract", "MedianAge"],  # NEW
-                        key_on="feature.properties.tract",  # NEW
-                        fill_color="YlOrRd",  # NEW  (distinct palette) 
-                        fill_opacity=0.7,  # NEW
-                        line_opacity=0.2,  # NEW
-                        legend_name="Median Age (years)",  # NEW
-                    ).add_to(m)  # NEW
+                    folium.Choropleth(
+                        geo_data=median_age_data,
+                        name="Median Age",
+                        data=median_age_df,
+                        columns=["tract", "MedianAge"],
+                        key_on="feature.properties.tract", 
+                        fill_color="YlOrRd",
+                        fill_opacity=0.7,
+                        line_opacity=0.2,
+                        legend_name="Median Age (years)",
+                    ).add_to(m)
 
-                    # -----------------------------  # NEW
-                    # Median Age Legend (Years)      # NEW
-                    # -----------------------------  # NEW
-                    median_age_legend_html = """  # NEW
+                    # -----------------------------
+                    # Median Age Legend (Years)
+                    # -----------------------------
+                    median_age_legend_html = """
                     <div style="
                         position: fixed; 
                         bottom: 40px; 
@@ -819,8 +819,8 @@ with tab3:
                             <i style="background:#f03b20;width:20px;height:10px;display:inline-block;"></i> 45+<br>
                         </span>
                     </div>
-                    """  # NEW
-                    m.get_root().html.add_child(folium.Element(median_age_legend_html))  # NEW
+                    """
+                    m.get_root().html.add_child(folium.Element(median_age_legend_html))
 
             # -----------------------------
             # 📍 POINTS OF INTEREST
@@ -912,7 +912,7 @@ with tab3:
                     </div>
                     """
 
-                m.get_root().html.add_child(folium.Element(poi_legend_html))    
+                m.get_root().html.add_child(folium.Element(poi_legend_html))
 
             # -----------------------------
             # ☁️ INCIDENTS (HEATMAP or CLUSTERS)
