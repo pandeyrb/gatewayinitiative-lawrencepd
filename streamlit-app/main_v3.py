@@ -628,12 +628,13 @@ with tab3:
                     ">
                         <strong style="color: black;">Unemployment Rate (%)</strong><br>
                         <span style="color: black;">
-                            <i style="background:#fff5f0;width:20px;height:10px;display:inline-block;"></i> 2.3%<br>
-                            <i style="background:#fcbba1;width:20px;height:10px;display:inline-block;"></i> 2.4 – 5.2%<br>
-                            <i style="background:#fc9272;width:20px;height:10px;display:inline-block;"></i> 5.3 – 8.3%<br>
-                            <i style="background:#fb6a4a;width:20px;height:10px;display:inline-block;"></i> 8.4 – 10.4%<br>
-                            <i style="background:#cb181d;width:20px;height:10px;display:inline-block;"></i> 10.5 – 12.8%<br>
+                            <i style="background:#f7fbff;width:20px;height:10px;display:inline-block;"></i> 2.3%<br>
+                            <i style="background:#deebf7;width:20px;height:10px;display:inline-block;"></i> 2.4 – 5.2%<br>
+                            <i style="background:#9ecae1;width:20px;height:10px;display:inline-block;"></i> 5.3 – 8.3%<br>
+                            <i style="background:#6baed6;width:20px;height:10px;display:inline-block;"></i> 8.4 – 10.4%<br>
+                            <i style="background:#3182bd;width:20px;height:10px;display:inline-block;"></i> 10.5 – 12.8%<br>
                         </span>
+
                     </div>
                     """
                     m.get_root().html.add_child(folium.Element(unemployment_legend_html))
