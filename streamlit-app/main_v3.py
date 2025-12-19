@@ -565,12 +565,12 @@ with tab3:
                     ">
                         <strong style="color: black;">Poverty Estimate (%)</strong><br>
                         <span style="color: black;">
-                            <i style="background:#fff5eb;width:20px;height:10px;display:inline-block;"></i> 0–8%<br>
-                            <i style="background:#fcbba1;width:20px;height:10px;display:inline-block;"></i> 8–15.6%<br>
-                            <i style="background:#fc9272;width:20px;height:10px;display:inline-block;"></i> 15.6–20.3%<br>
-                            <i style="background:#fb6a4a;width:20px;height:10px;display:inline-block;"></i> 20.3–28.4%<br>
-                            <i style="background:#de2d26;width:20px;height:10px;display:inline-block;"></i> 28.4–36.7%<br>
-                            <i style="background:#a50f15;width:20px;height:10px;display:inline-block;"></i> 36.7%+
+                            <i style="background:#f7fbff;width:20px;height:10px;display:inline-block;"></i> 0-8%<br>
+                            <i style="background:#deebf7;width:20px;height:10px;display:inline-block;"></i> 8-15.6%<br>
+                            <i style="background:#c6dbef;width:20px;height:10px;display:inline-block;"></i> 15.6-20.3%<br>
+                            <i style="background:#9ecae1;width:20px;height:10px;display:inline-block;"></i> 20.3-28.4%<br>
+                            <i style="background:#6baed6;width:20px;height:10px;display:inline-block;"></i> 28.4-36.7%<br>
+                            <i style="background:#3182bd;width:20px;height:10px;display:inline-block;"></i> 36.7%+
                         </span>
                     </div>
                     """
