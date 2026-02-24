@@ -8,3 +8,5 @@ config.json
 !school_geocoded.csv
 !places_of_worship_geocoded.csv
 tl_2024_25_tractdata/
+*.duckdb
+*.duckdb.wal
