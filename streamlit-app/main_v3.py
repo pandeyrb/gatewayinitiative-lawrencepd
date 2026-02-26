@@ -2,6 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
+import plotly.express as px
 import folium
 from folium.plugins import MarkerCluster, HeatMap
 from streamlit_folium import st_folium
@@ -323,9 +324,9 @@ def load_lawrence_boundary():
 
 @st.cache_data
 def load_data():
-    file_path = os.path.join(SCRIPT_DIR, "checkpoint11_combined_data.csv")
+    file_path = os.path.join(SCRIPT_DIR, "checkpoint15_misdemeanor_warrant.csv")
     df = pd.read_csv(file_path)
-    data = df[['latitude', 'longitude', 'category', 'crime_severity', 'Incident #', 'Date']].dropna()
+    data = df[['latitude', 'longitude', 'category', 'crime_severity', 'Date']].dropna()
     # Ensure lat/lon are numeric (once, at load time — eliminates per-row lambda checks later)
     data['latitude'] = pd.to_numeric(data['latitude'], errors='coerce')
     data['longitude'] = pd.to_numeric(data['longitude'], errors='coerce')
@@ -333,6 +334,12 @@ def load_data():
     data['Date'] = pd.to_datetime(data['Date'])
     data['year'] = data['Date'].dt.year
     return data
+
+
+@st.cache_data
+def load_charge_data():
+    csv_path = os.path.join(SCRIPT_DIR, "..", "scripts", "charges", "unique_charges_standardized.csv")
+    return pd.read_csv(csv_path)
 
 
 @st.cache_data
@@ -444,8 +451,7 @@ def filter_data_duckdb(selected_years, selected_incidents, serious_crime_filter)
     conn = get_db_connection()
     where = _build_where_clause(selected_years, selected_incidents, serious_crime_filter)
     query = f"""
-        SELECT latitude, longitude, category, crime_severity,
-               incident_num AS "Incident #", Date, year
+        SELECT latitude, longitude, category, crime_severity, Date, year
         FROM incidents
         WHERE {where}
     """
@@ -776,17 +782,93 @@ with tab2:
         with st.sidebar:
             st.markdown("## Data Trends")
             viz_choice = st.selectbox(
-                "Choose a Tableau view",
-                ["Incidents Per Category", "Incidents Per Year", "Incidents Per Month"],
+                "Choose a view",
+                ["Incidents Per Category", "Incidents Per Year", "Incidents Per Month", "Charge Analysis"],
                 index=0,
-                help="Each view has its own Category and Crime Severity filters inside the Tableau viz."
+                help="Tableau views have built-in filters. Charge Analysis uses pre-aggregated charge data."
             )
     else:
         viz_choice = None
 
-    if viz_choice:
+    if viz_choice and viz_choice != "Charge Analysis":
         st.subheader(viz_choice)
         components.html(TABLEAU_VIZ_MAP[viz_choice], height=850, scrolling=True)
+
+    elif viz_choice == "Charge Analysis":
+        charge_df = load_charge_data()
+
+        # ── Top-K Charge Frequency ──────────────────────────────────────────
+        st.subheader("Charge Frequency")
+        top_k = st.slider("Number of top charges to show", min_value=5, max_value=25, value=10, step=1)
+
+        color_map = {"Misdemeanor": "#4C72B0", "Felony": "#DD8452", "Either": "#55A868"}
+
+        top_charges = (
+            charge_df
+            .nlargest(top_k, "total_count")
+            .sort_values("total_count", ascending=True)
+        )
+        fig_bar = px.bar(
+            top_charges,
+            x="total_count",
+            y="base_charge",
+            orientation="h",
+            color="charge_class",
+            color_discrete_map=color_map,
+            labels={"total_count": "Count", "base_charge": "Charge", "charge_class": "Class"},
+            title=f"Top {top_k} Most Frequent Charges",
+        )
+        fig_bar.update_layout(
+            height=max(400, top_k * 28),
+            yaxis=dict(tickfont=dict(size=11)),
+            legend_title_text="Charge Class",
+        )
+        st.plotly_chart(fig_bar, use_container_width=True)
+
+        # ── Misdemeanor Distribution ────────────────────────────────────────
+        st.subheader("Misdemeanor Distribution")
+        col1, col2 = st.columns([1, 2])
+
+        with col1:
+            class_counts = (
+                charge_df
+                .groupby("charge_class", as_index=False)["total_count"]
+                .sum()
+            )
+            fig_donut = px.pie(
+                class_counts,
+                values="total_count",
+                names="charge_class",
+                hole=0.5,
+                color="charge_class",
+                color_discrete_map=color_map,
+                title="Charge Class Split",
+            )
+            fig_donut.update_traces(textposition="inside", textinfo="percent+label")
+            fig_donut.update_layout(showlegend=False)
+            st.plotly_chart(fig_donut, use_container_width=True)
+
+        with col2:
+            mis_df = (
+                charge_df[charge_df["charge_class"] == "Misdemeanor"]
+                .nlargest(top_k, "total_count")
+                .sort_values("total_count", ascending=True)
+            )
+            fig_mis = px.bar(
+                mis_df,
+                x="total_count",
+                y="base_charge",
+                orientation="h",
+                color_discrete_sequence=["#4C72B0"],
+                labels={"total_count": "Count", "base_charge": "Charge"},
+                title=f"Top {top_k} Misdemeanor Charges",
+            )
+            fig_mis.update_layout(
+                height=max(400, top_k * 28),
+                yaxis=dict(tickfont=dict(size=11)),
+                showlegend=False,
+            )
+            st.plotly_chart(fig_mis, use_container_width=True)
 
     # Footer
     st.markdown("""

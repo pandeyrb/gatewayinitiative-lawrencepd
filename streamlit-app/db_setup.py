@@ -17,7 +17,7 @@ import duckdb
 
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-CSV_PATH = os.path.join(SCRIPT_DIR, "checkpoint11_combined_data.csv")
+CSV_PATH = os.path.join(SCRIPT_DIR, "checkpoint15_misdemeanor_warrant.csv")
 DB_PATH = os.path.join(SCRIPT_DIR, "incidents.duckdb")
 
 
@@ -39,7 +39,6 @@ def build_database(csv_path: str, db_path: str) -> None:
     conn.execute(f"""
         CREATE TABLE incidents AS
         SELECT
-            "Incident #"    AS incident_num,
             CAST("Date" AS TIMESTAMP) AS Date,
             "Type"          AS type,
             "Location"      AS location,
@@ -53,16 +52,23 @@ def build_database(csv_path: str, db_path: str) -> None:
             person_id,
             category,
             "Year"          AS year,
-            crime_severity
+            crime_severity,
+            CAST("Age" AS DOUBLE) AS age,
+            statutes,
+            standardized_charges,
+            CAST("has_warrant" AS BOOLEAN) AS has_warrant,
+            CAST("is_misdemeanor" AS BOOLEAN) AS is_misdemeanor
         FROM read_csv_auto('{csv_path}', header=true, all_varchar=false)
     """)
 
     # Create indexes on the columns used for filtering
     print("Creating indexes…")
-    conn.execute("CREATE INDEX IF NOT EXISTS idx_year     ON incidents(year)")
-    conn.execute("CREATE INDEX IF NOT EXISTS idx_category ON incidents(category)")
-    conn.execute("CREATE INDEX IF NOT EXISTS idx_severity ON incidents(crime_severity)")
-    conn.execute("CREATE INDEX IF NOT EXISTS idx_lat_lon  ON incidents(latitude, longitude)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_year        ON incidents(year)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_category    ON incidents(category)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_severity    ON incidents(crime_severity)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_lat_lon     ON incidents(latitude, longitude)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_misdemeanor ON incidents(is_misdemeanor)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_warrant     ON incidents(has_warrant)")
 
     # Composite index for the most common filter combination
     conn.execute("""
@@ -106,11 +112,10 @@ def append_data(csv_path: str, db_path: str) -> None:
 
     before_count = conn.execute("SELECT COUNT(*) FROM incidents").fetchone()[0]
 
-    # Insert only rows whose incident_num doesn't already exist
+    # Insert only rows whose (Date, person_id, Type) combo doesn't already exist
     conn.execute(f"""
         INSERT INTO incidents
         SELECT
-            "Incident #"    AS incident_num,
             CAST("Date" AS TIMESTAMP) AS Date,
             "Type"          AS type,
             "Location"      AS location,
@@ -124,10 +129,17 @@ def append_data(csv_path: str, db_path: str) -> None:
             person_id,
             category,
             "Year"          AS year,
-            crime_severity
+            crime_severity,
+            CAST("Age" AS DOUBLE) AS age,
+            statutes,
+            standardized_charges,
+            CAST("has_warrant" AS BOOLEAN) AS has_warrant,
+            CAST("is_misdemeanor" AS BOOLEAN) AS is_misdemeanor
         FROM read_csv_auto('{csv_path}', header=true, all_varchar=false) AS new_data
-        WHERE new_data."Incident #" NOT IN (
-            SELECT incident_num FROM incidents
+        WHERE md5(CAST(new_data."Date" AS VARCHAR) || COALESCE(new_data.person_id, '') || COALESCE(new_data."Type", ''))
+        NOT IN (
+            SELECT md5(CAST(Date AS VARCHAR) || COALESCE(person_id, '') || COALESCE(type, ''))
+            FROM incidents
         )
     """)
 
