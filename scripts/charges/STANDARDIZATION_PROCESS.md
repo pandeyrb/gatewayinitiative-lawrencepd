@@ -9,9 +9,10 @@ This document explains how raw police charge strings from Lawrence PD incident d
 | `clean_charges.ipynb` | Cleans the raw `Charges` column, extracts statutes, splits multi-charge rows into `charge_1 … charge_N` columns, and builds `unique_charges_reference_v3.csv` (checkpoint 13) |
 | `standardize_charges.py` | Core pipeline module: 8-step normalization applied to individual charge strings |
 | `standardize_charges.ipynb` | Applies the pipeline to every charge in checkpoint 13, collapses expanded columns into a single `standardized_charges` field, and saves checkpoint 14 |
+| `add_misdemeanor_warrant_cols.ipynb` | Adds `is_misdemeanor` and `has_warrant` columns to checkpoint 14 and saves checkpoint 15 |
 
 **Input:**  `data/charges/unique_charges_reference_v3.csv`
-**Output:** `scripts/charges/unique_charges_standardized.csv`, `data/checkpoints/checkpoint14_standardized_charges.csv`
+**Output:** `scripts/charges/unique_charges_standardized.csv`, `data/checkpoints/checkpoint14_standardized_charges.csv`, `data/checkpoints/checkpoint15_misdemeanor_warrant.csv`
 
 ---
 
