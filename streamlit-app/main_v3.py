@@ -234,9 +234,16 @@ WORSHIP_ICON_URL = "https://cdn-icons-png.flaticon.com/512/4258/4258470.png"
 NONPROFIT_ICON_URL = "https://cdn-icons-png.flaticon.com/512/1946/1946429.png"
 
 POI_TYPES_LIST = [
-    "Bar or Lounge", "Convenience Store", "Grocery Store w/ Liquor",
-    "Liquor Store", "Nightclub", "Restaurant",
-    "Social Club", "Schools", "Places of Worship", "Non-Profits"
+    "Bar or Lounge",
+    "Convenience Store",
+    "Grocery Store w/ Liquor",
+    "Liquor Store",
+    "Nightclub",
+    "Restaurant",
+    "Social Club",
+    "Schools",
+    "Places of Worship",
+    "Non-Profits",
 ]
 
 LEGEND_STYLE = """
@@ -326,19 +333,21 @@ def load_lawrence_boundary():
 def load_data():
     file_path = os.path.join(SCRIPT_DIR, "checkpoint15_misdemeanor_warrant.csv")
     df = pd.read_csv(file_path)
-    data = df[['latitude', 'longitude', 'category', 'crime_severity', 'Date']].dropna()
+    data = df[["latitude", "longitude", "category", "crime_severity", "Date"]].dropna()
     # Ensure lat/lon are numeric (once, at load time — eliminates per-row lambda checks later)
-    data['latitude'] = pd.to_numeric(data['latitude'], errors='coerce')
-    data['longitude'] = pd.to_numeric(data['longitude'], errors='coerce')
-    data = data.dropna(subset=['latitude', 'longitude'])
-    data['Date'] = pd.to_datetime(data['Date'])
-    data['year'] = data['Date'].dt.year
+    data["latitude"] = pd.to_numeric(data["latitude"], errors="coerce")
+    data["longitude"] = pd.to_numeric(data["longitude"], errors="coerce")
+    data = data.dropna(subset=["latitude", "longitude"])
+    data["Date"] = pd.to_datetime(data["Date"])
+    data["year"] = data["Date"].dt.year
     return data
 
 
 @st.cache_data
 def load_charge_data():
-    csv_path = os.path.join(SCRIPT_DIR, "..", "scripts", "charges", "unique_charges_standardized.csv")
+    csv_path = os.path.join(
+        SCRIPT_DIR, "..", "scripts", "charges", "unique_charges_standardized.csv"
+    )
     return pd.read_csv(csv_path)
 
 
@@ -378,6 +387,7 @@ def load_boundary(filename):
 # DUCKDB CONNECTION
 # =============================================================
 
+
 @st.cache_resource
 def get_db_connection():
     """Return a read-only DuckDB connection, or None if .duckdb file missing."""
@@ -396,6 +406,7 @@ def _use_duckdb():
 # CACHED COMPUTATION FUNCTIONS — DuckDB with pandas fallback
 # =============================================================
 
+
 def _build_where_clause(selected_years, selected_incidents, serious_crime_filter):
     """Build a SQL WHERE clause from the sidebar filter values."""
     clauses = ["latitude IS NOT NULL", "longitude IS NOT NULL"]
@@ -405,7 +416,9 @@ def _build_where_clause(selected_years, selected_incidents, serious_crime_filter
         clauses.append(f"year IN ({year_list})")
 
     if "All" not in selected_incidents and selected_incidents:
-        cats = ",".join(f"'{c.replace(chr(39), chr(39)+chr(39))}'" for c in selected_incidents)
+        cats = ",".join(
+            f"'{c.replace(chr(39), chr(39) + chr(39))}'" for c in selected_incidents
+        )
         clauses.append(f"category IN ({cats})")
 
     if serious_crime_filter == "Serious Only":
@@ -417,6 +430,7 @@ def _build_where_clause(selected_years, selected_incidents, serious_crime_filter
 
 
 # --- Incident types ---
+
 
 @st.cache_data
 def get_incident_types_duckdb():
@@ -436,6 +450,7 @@ def get_incident_types_pandas(_data_categories):
 
 # --- Unique years ---
 
+
 @st.cache_data
 def get_unique_years_duckdb():
     conn = get_db_connection()
@@ -445,11 +460,14 @@ def get_unique_years_duckdb():
 
 # --- Filter data ---
 
+
 @st.cache_data
 def filter_data_duckdb(selected_years, selected_incidents, serious_crime_filter):
     """Run an indexed SQL query and return a pandas DataFrame."""
     conn = get_db_connection()
-    where = _build_where_clause(selected_years, selected_incidents, serious_crime_filter)
+    where = _build_where_clause(
+        selected_years, selected_incidents, serious_crime_filter
+    )
     query = f"""
         SELECT latitude, longitude, category, crime_severity, Date, year
         FROM incidents
@@ -464,27 +482,31 @@ def filter_data_duckdb(selected_years, selected_incidents, serious_crime_filter)
 def filter_data_pandas(data, selected_years, selected_incidents, serious_crime_filter):
     """Fallback: filter with pandas boolean indexing."""
     if "All" in selected_incidents:
-        filtered = data[data['year'].isin(selected_years)]
+        filtered = data[data["year"].isin(selected_years)]
     else:
         filtered = data[
-            (data['category'].isin(selected_incidents)) &
-            (data['year'].isin(selected_years))
+            (data["category"].isin(selected_incidents))
+            & (data["year"].isin(selected_years))
         ]
     if serious_crime_filter == "Serious Only":
-        filtered = filtered[filtered['crime_severity'] == 'Serious']
+        filtered = filtered[filtered["crime_severity"] == "Serious"]
     elif serious_crime_filter == "Non-Serious Only":
-        filtered = filtered[filtered['crime_severity'] == 'Not-Serious']
+        filtered = filtered[filtered["crime_severity"] == "Not-Serious"]
     return filtered
 
 
 # --- Hotspot calculation ---
 
+
 @st.cache_data
-def calculate_hotspots_duckdb(selected_years, selected_incidents,
-                               serious_crime_filter, hotspot_percentile):
+def calculate_hotspots_duckdb(
+    selected_years, selected_incidents, serious_crime_filter, hotspot_percentile
+):
     """Single SQL query: bin → group → percentile filter."""
     conn = get_db_connection()
-    where = _build_where_clause(selected_years, selected_incidents, serious_crime_filter)
+    where = _build_where_clause(
+        selected_years, selected_incidents, serious_crime_filter
+    )
     query = f"""
         WITH binned AS (
             SELECT ROUND(latitude, 3) AS lat_bin,
@@ -516,9 +538,12 @@ def calculate_hotspots_pandas(lat_series, lon_series, hotspot_percentile):
     """Fallback: pandas groupby hotspot calculation."""
     lat_bin = lat_series.round(3)
     lon_bin = lon_series.round(3)
-    counts = pd.DataFrame({"lat_bin": lat_bin, "lon_bin": lon_bin}).groupby(
-        ["lat_bin", "lon_bin"]
-    ).size().reset_index(name="count")
+    counts = (
+        pd.DataFrame({"lat_bin": lat_bin, "lon_bin": lon_bin})
+        .groupby(["lat_bin", "lon_bin"])
+        .size()
+        .reset_index(name="count")
+    )
     cutoff = counts["count"].quantile(hotspot_percentile / 100)
     top_points = counts[counts["count"] >= cutoff]
     return top_points[["lat_bin", "lon_bin", "count"]].values.tolist()
@@ -526,19 +551,22 @@ def calculate_hotspots_pandas(lat_series, lon_series, hotspot_percentile):
 
 # --- Choropleth helper (unchanged, always from GeoJSON) ---
 
+
 @st.cache_data
 def build_choropleth_df(geojson_data, value_key="Estimate"):
     """Cache GeoJSON → DataFrame conversion for choropleth layers."""
-    return pd.DataFrame([
-        {
-            "tract": feature["properties"].get("tract"),
-            value_key: feature["properties"].get(value_key),
-        }
-        for feature in geojson_data.get("features", [])
-        if feature.get("properties")
-        and feature["properties"].get("tract")
-        and feature["properties"].get(value_key) is not None
-    ])
+    return pd.DataFrame(
+        [
+            {
+                "tract": feature["properties"].get("tract"),
+                value_key: feature["properties"].get(value_key),
+            }
+            for feature in geojson_data.get("features", [])
+            if feature.get("properties")
+            and feature["properties"].get("tract")
+            and feature["properties"].get(value_key) is not None
+        ]
+    )
 
 
 # =============================================================
@@ -548,7 +576,8 @@ def build_choropleth_df(geojson_data, value_key="Estimate"):
 st.set_page_config(page_title="Lawrence Police Incidents Dashboard", layout="wide")
 
 # ----- Global custom CSS -----
-st.markdown("""
+st.markdown(
+    """
 <style>
 /* ---- Typography & spacing ---- */
 h1 { font-size: 2rem !important; font-weight: 700 !important; letter-spacing: -0.02em; }
@@ -629,7 +658,9 @@ details summary {
     font-weight: 600 !important; font-size: 0.9rem !important;
 }
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 st.title("Lawrence Police Incidents Dashboard")
 st.caption("Exploring public safety patterns in Lawrence, MA  |  Data: 2018 -- 2024")
@@ -638,8 +669,10 @@ st.caption("Exploring public safety patterns in Lawrence, MA  |  Data: 2018 -- 2
 if "active_tab" not in st.session_state:
     st.session_state.active_tab = "About Project"
 
+
 def set_tab(tab_name):
     st.session_state.active_tab = tab_name
+
 
 # Tabs
 tab1, tab2, tab3 = st.tabs(["About the Project", "Data Trends", "Spatial Insights"])
@@ -652,7 +685,8 @@ with tab1:
     set_tab("About the Project")
 
     # Hero section
-    st.markdown("""
+    st.markdown(
+        """
 <div class="info-card" style="border-left-color: #0079c1;">
 <h4>About This Dashboard</h4>
 <p>
@@ -668,31 +702,42 @@ understanding of the influences on public safety, helping the community work
 together toward safer neighborhoods.
 </p>
 </div>
-""", unsafe_allow_html=True)
+""",
+        unsafe_allow_html=True,
+    )
 
     # Three-column feature highlights
     col_a, col_b, col_c = st.columns(3)
     with col_a:
-        st.markdown("""
+        st.markdown(
+            """
 <div class="info-card">
 <h4>Temporal Trends</h4>
 <p>Incident counts by year and month reveal seasonal patterns, long-term trends,
 and the impact of policy changes.</p>
-</div>""", unsafe_allow_html=True)
+</div>""",
+            unsafe_allow_html=True,
+        )
     with col_b:
-        st.markdown("""
+        st.markdown(
+            """
 <div class="info-card">
 <h4>Spatial Insights</h4>
 <p>Interactive maps with heatmaps, hotspot analysis, and points of interest
 show <em>where</em> incidents concentrate.</p>
-</div>""", unsafe_allow_html=True)
+</div>""",
+            unsafe_allow_html=True,
+        )
     with col_c:
-        st.markdown("""
+        st.markdown(
+            """
 <div class="info-card">
 <h4>Context Layers</h4>
 <p>Overlay poverty, unemployment, income, and median age data at the
 census-tract level for equity-informed analysis.</p>
-</div>""", unsafe_allow_html=True)
+</div>""",
+            unsafe_allow_html=True,
+        )
 
     # Data Sources
     st.markdown("---")
@@ -759,17 +804,20 @@ Serious crimes highlight higher-harm and higher-risk events:
     st.info(
         "**Data context:** Entries reflect calls for service and officer reports, "
         "not court outcomes or convictions.",
-        icon=None
+        icon=None,
     )
 
     # Footer
-    st.markdown("""
+    st.markdown(
+        """
 <div class="app-footer">
     Lawrence Police Incidents Dashboard &nbsp;&middot;&nbsp;
     Data: <a href="https://www.lawpd.com/DocumentCenter/Index/237">Lawrence PD Daily Logs</a> &nbsp;&middot;&nbsp;
     Built with <a href="https://streamlit.io">Streamlit</a>
 </div>
-""", unsafe_allow_html=True)
+""",
+        unsafe_allow_html=True,
+    )
 
 
 # =============================================================
@@ -783,9 +831,14 @@ with tab2:
             st.markdown("## Data Trends")
             viz_choice = st.selectbox(
                 "Choose a view",
-                ["Incidents Per Category", "Incidents Per Year", "Incidents Per Month", "Charge Analysis"],
+                [
+                    "Incidents Per Category",
+                    "Incidents Per Year",
+                    "Incidents Per Month",
+                    "Charge Analysis",
+                ],
                 index=0,
-                help="Tableau views have built-in filters. Charge Analysis uses pre-aggregated charge data."
+                help="Tableau views have built-in filters. Charge Analysis uses pre-aggregated charge data.",
             )
     else:
         viz_choice = None
@@ -799,14 +852,14 @@ with tab2:
 
         # ── Top-K Charge Frequency ──────────────────────────────────────────
         st.subheader("Charge Frequency")
-        top_k = st.slider("Number of top charges to show", min_value=5, max_value=25, value=10, step=1)
+        top_k = st.slider(
+            "Number of top charges to show", min_value=5, max_value=25, value=10, step=1
+        )
 
         color_map = {"Misdemeanor": "#4C72B0", "Felony": "#DD8452", "Either": "#55A868"}
 
-        top_charges = (
-            charge_df
-            .nlargest(top_k, "total_count")
-            .sort_values("total_count", ascending=True)
+        top_charges = charge_df.nlargest(top_k, "total_count").sort_values(
+            "total_count", ascending=True
         )
         fig_bar = px.bar(
             top_charges,
@@ -815,7 +868,11 @@ with tab2:
             orientation="h",
             color="charge_class",
             color_discrete_map=color_map,
-            labels={"total_count": "Count", "base_charge": "Charge", "charge_class": "Class"},
+            labels={
+                "total_count": "Count",
+                "base_charge": "Charge",
+                "charge_class": "Class",
+            },
             title=f"Top {top_k} Most Frequent Charges",
         )
         fig_bar.update_layout(
@@ -830,11 +887,9 @@ with tab2:
         col1, col2 = st.columns([1, 2])
 
         with col1:
-            class_counts = (
-                charge_df
-                .groupby("charge_class", as_index=False)["total_count"]
-                .sum()
-            )
+            class_counts = charge_df.groupby("charge_class", as_index=False)[
+                "total_count"
+            ].sum()
             fig_donut = px.pie(
                 class_counts,
                 values="total_count",
@@ -871,13 +926,16 @@ with tab2:
             st.plotly_chart(fig_mis, use_container_width=True)
 
     # Footer
-    st.markdown("""
+    st.markdown(
+        """
 <div class="app-footer">
     Lawrence Police Incidents Dashboard &nbsp;&middot;&nbsp;
     Data: <a href="https://www.lawpd.com/DocumentCenter/Index/237">Lawrence PD Daily Logs</a> &nbsp;&middot;&nbsp;
     Built with <a href="https://streamlit.io">Streamlit</a>
 </div>
-""", unsafe_allow_html=True)
+""",
+        unsafe_allow_html=True,
+    )
 
 
 # =============================================================
@@ -903,8 +961,10 @@ with tab3:
         incident_types = get_incident_types_duckdb()
         all_years = get_unique_years_duckdb()
     else:
-        incident_types = get_incident_types_pandas(tuple(data['category'].dropna().unique()))
-        all_years = sorted(data['year'].unique().tolist())
+        incident_types = get_incident_types_pandas(
+            tuple(data["category"].dropna().unique())
+        )
+        all_years = sorted(data["year"].unique().tolist())
 
     # Pre-load boundary GeoJSON + choropleth DataFrames
     poverty_geojson = load_boundary("poverty_boundary.geojson")
@@ -914,14 +974,15 @@ with tab3:
 
     poverty_choro_df = build_choropleth_df(poverty_geojson, "Estimate")
     unemployment_choro_df = build_choropleth_df(unemployment_geojson, "Estimate")
-    household_income_choro_df = build_choropleth_df(household_income_geojson, "Estimate")
+    household_income_choro_df = build_choropleth_df(
+        household_income_geojson, "Estimate"
+    )
     median_age_choro_df = build_choropleth_df(median_age_geojson, "MedianAge")
 
     # -----------------------------
     # SIDEBAR CONTROLS
     # -----------------------------
     if st.session_state.active_tab == "Spatial Insights":
-
         with st.sidebar:
             st.markdown("## Map Controls")
 
@@ -930,41 +991,58 @@ with tab3:
                     "Year(s)",
                     all_years,
                     default=all_years,
-                    help="Select one or more years to include."
+                    help="Select one or more years to include.",
                 )
                 selected_incidents = st.multiselect(
                     "Incident Categories",
                     incident_types,
                     default="Violent and Weapon Offenses",
-                    help="Choose 'All' or pick specific categories."
+                    help="Choose 'All' or pick specific categories.",
                 )
                 serious_crime_filter = st.selectbox(
                     "Crime Severity",
                     ["All", "Serious Only", "Non-Serious Only"],
-                    help="Filter by serious or non-serious classification."
+                    help="Filter by serious or non-serious classification.",
                 )
 
             with st.expander("Map Layers", expanded=False):
-                heatmap_enabled = st.toggle("Show Heatmap", value=False,
-                    help="Replace cluster markers with a continuous heatmap.")
+                heatmap_enabled = st.toggle(
+                    "Show Heatmap",
+                    value=False,
+                    help="Replace cluster markers with a continuous heatmap.",
+                )
                 secondary_choice = st.selectbox(
                     "Socioeconomic Overlay",
-                    ["None", "Poverty Data", "Median Household Income", "Unemployment Data", "Median Age"],
+                    [
+                        "None",
+                        "Poverty Data",
+                        "Median Household Income",
+                        "Unemployment Data",
+                        "Median Age",
+                    ],
                     index=0,
-                    help="Overlay census-tract level context data on the map."
+                    help="Overlay census-tract level context data on the map.",
                 )
                 poverty_layer_enabled = secondary_choice == "Poverty Data"
                 unemployment_layer_enabled = secondary_choice == "Unemployment Data"
-                median_household_income_layer_enabled = secondary_choice == "Median Household Income"
+                median_household_income_layer_enabled = (
+                    secondary_choice == "Median Household Income"
+                )
                 median_age_layer_enabled = secondary_choice == "Median Age"
 
             with st.expander("Hotspot Analysis", expanded=False):
-                hotspot_enabled = st.toggle("Show Hotspot Areas", value=False,
-                    help="Highlight areas with the highest incident density.")
+                hotspot_enabled = st.toggle(
+                    "Show Hotspot Areas",
+                    value=False,
+                    help="Highlight areas with the highest incident density.",
+                )
                 hotspot_percentile = st.slider(
                     "Percentile Threshold",
-                    70, 95, 90, step=5,
-                    help="Show only grid cells above this percentile in incident count."
+                    70,
+                    95,
+                    90,
+                    step=5,
+                    help="Show only grid cells above this percentile in incident count.",
                 )
                 grid_size_m = st.selectbox(
                     "Grid Cell Size", ["250m", "500m", "1km"], index=1
@@ -972,13 +1050,15 @@ with tab3:
                 hotspot_only = st.checkbox("Hide individual incidents", value=True)
 
             with st.expander("Points of Interest", expanded=False):
-                show_poi = st.toggle("Show POIs", value=False,
-                    help="Show nearby bars, schools, places of worship, etc.")
+                show_poi = st.toggle(
+                    "Show POIs",
+                    value=False,
+                    help="Show nearby bars, schools, places of worship, etc.",
+                )
                 selected_poi_types = []
                 if show_poi:
                     selected_poi_types = st.multiselect(
-                        "POI Types",
-                        POI_TYPES_LIST, default=["Schools"]
+                        "POI Types", POI_TYPES_LIST, default=["Non-Profits"]
                     )
 
         # -----------------------------
@@ -1000,11 +1080,16 @@ with tab3:
 
         # --- KPI summary row ---
         n_incidents = len(filtered_data)
-        year_range = f"{min(selected_year)}--{max(selected_year)}" if selected_year else "N/A"
-        n_categories = len(set(filtered_data['category'])) if n_incidents else 0
-        severity_label = serious_crime_filter if serious_crime_filter != "All" else "All Severities"
+        year_range = (
+            f"{min(selected_year)}--{max(selected_year)}" if selected_year else "N/A"
+        )
+        n_categories = len(set(filtered_data["category"])) if n_incidents else 0
+        severity_label = (
+            serious_crime_filter if serious_crime_filter != "All" else "All Severities"
+        )
 
-        st.markdown(f"""
+        st.markdown(
+            f"""
 <div class="kpi-row">
     <div class="kpi-card">
         <div class="kpi-value">{n_incidents:,}</div>
@@ -1023,22 +1108,33 @@ with tab3:
         <div class="kpi-label">Severity Filter</div>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""",
+            unsafe_allow_html=True,
+        )
 
         # -----------------------------
         # MAP
         # -----------------------------
         if not filtered_data.empty:
             with st.spinner("Building map..."):
-                m = folium.Map(location=[42.70, -71.155], zoom_start=14,
-                        control_scale=True, tiles="CartoDB positron")
+                m = folium.Map(
+                    location=[42.70, -71.155],
+                    zoom_start=14,
+                    control_scale=True,
+                    tiles="CartoDB positron",
+                )
 
                 m.get_root().html.add_child(folium.Element(MAP_PADDING_CSS))
 
                 folium.GeoJson(
                     lawrence_geojson,
                     name="Lawrence Border",
-                    style_function=lambda x: {"color": "#333", "weight": 2.5, "fillOpacity": 0, "dashArray": "6 3"}
+                    style_function=lambda x: {
+                        "color": "#333",
+                        "weight": 2.5,
+                        "fillOpacity": 0,
+                        "dashArray": "6 3",
+                    },
                 ).add_to(m)
 
                 # Hotspots
@@ -1052,59 +1148,85 @@ with tab3:
                         )
                     else:
                         heat_data = calculate_hotspots_pandas(
-                            filtered_data['latitude'],
-                            filtered_data['longitude'],
+                            filtered_data["latitude"],
+                            filtered_data["longitude"],
                             hotspot_percentile,
                         )
 
                     heat_layer = folium.FeatureGroup(name="Hotspot Heatmap")
                     HeatMap(
                         heat_data,
-                        radius=18, blur=12, min_opacity=0.35, max_zoom=13,
+                        radius=18,
+                        blur=12,
+                        min_opacity=0.35,
+                        max_zoom=13,
                         gradient={
-                            0.2: "#FFF3B0", 0.4: "#FFD166",
-                            0.6: "#FAA307", 0.8: "#E85D04", 1.0: "#9D0208"
-                        }
+                            0.2: "#FFF3B0",
+                            0.4: "#FFD166",
+                            0.6: "#FAA307",
+                            0.8: "#E85D04",
+                            1.0: "#9D0208",
+                        },
                     ).add_to(heat_layer)
                     heat_layer.add_to(m)
 
                 # Socioeconomic layers
                 if poverty_layer_enabled:
                     folium.Choropleth(
-                        geo_data=poverty_geojson, name="Poverty Index",
-                        data=poverty_choro_df, columns=["tract", "Estimate"],
+                        geo_data=poverty_geojson,
+                        name="Poverty Index",
+                        data=poverty_choro_df,
+                        columns=["tract", "Estimate"],
                         key_on="feature.properties.tract",
-                        fill_color="Blues", fill_opacity=0.5, line_opacity=0.3,
+                        fill_color="Blues",
+                        fill_opacity=0.5,
+                        line_opacity=0.3,
                         legend_name="Percent Below Poverty Line (%)",
                     ).add_to(m)
                     m.get_root().html.add_child(folium.Element(POVERTY_LEGEND_HTML))
 
                 if unemployment_layer_enabled:
                     folium.Choropleth(
-                        geo_data=unemployment_geojson, name="Unemployment Data",
-                        data=unemployment_choro_df, columns=["tract", "Estimate"],
+                        geo_data=unemployment_geojson,
+                        name="Unemployment Data",
+                        data=unemployment_choro_df,
+                        columns=["tract", "Estimate"],
                         key_on="feature.properties.tract",
-                        fill_color="PuBu", fill_opacity=0.7, line_opacity=0.2,
+                        fill_color="PuBu",
+                        fill_opacity=0.7,
+                        line_opacity=0.2,
                         legend_name="Unemployment Rate (%)",
                     ).add_to(m)
-                    m.get_root().html.add_child(folium.Element(UNEMPLOYMENT_LEGEND_HTML))
+                    m.get_root().html.add_child(
+                        folium.Element(UNEMPLOYMENT_LEGEND_HTML)
+                    )
 
                 if median_household_income_layer_enabled:
                     folium.Choropleth(
-                        geo_data=household_income_geojson, name="Median Household Income",
-                        data=household_income_choro_df, columns=["tract", "Estimate"],
+                        geo_data=household_income_geojson,
+                        name="Median Household Income",
+                        data=household_income_choro_df,
+                        columns=["tract", "Estimate"],
                         key_on="feature.properties.tract",
-                        fill_color="PuBu", fill_opacity=0.7, line_opacity=0.2,
+                        fill_color="PuBu",
+                        fill_opacity=0.7,
+                        line_opacity=0.2,
                         legend_name="Median Household Income (%)",
                     ).add_to(m)
-                    m.get_root().html.add_child(folium.Element(HOUSEHOLD_INCOME_LEGEND_HTML))
+                    m.get_root().html.add_child(
+                        folium.Element(HOUSEHOLD_INCOME_LEGEND_HTML)
+                    )
 
                 if median_age_layer_enabled:
                     folium.Choropleth(
-                        geo_data=median_age_geojson, name="Median Age",
-                        data=median_age_choro_df, columns=["tract", "MedianAge"],
+                        geo_data=median_age_geojson,
+                        name="Median Age",
+                        data=median_age_choro_df,
+                        columns=["tract", "MedianAge"],
                         key_on="feature.properties.tract",
-                        fill_color="PuBu", fill_opacity=0.7, line_opacity=0.2,
+                        fill_color="PuBu",
+                        fill_opacity=0.7,
+                        line_opacity=0.2,
                         legend_name="Median Age (years)",
                     ).add_to(m)
                     m.get_root().html.add_child(folium.Element(MEDIAN_AGE_LEGEND_HTML))
@@ -1118,14 +1240,18 @@ with tab3:
                                 folium.Marker(
                                     [row.latitude, row.longitude],
                                     tooltip=row.NAME,
-                                    icon=folium.CustomIcon(SCHOOL_ICON_URL, icon_size=(20, 20))
+                                    icon=folium.CustomIcon(
+                                        SCHOOL_ICON_URL, icon_size=(20, 20)
+                                    ),
                                 ).add_to(poi_group)
                         elif poi_type == "Places of Worship":
                             for row in pow_df.itertuples(index=False):
                                 folium.Marker(
                                     [row.latitude, row.longitude],
                                     tooltip=row.NAME,
-                                    icon=folium.CustomIcon(WORSHIP_ICON_URL, icon_size=(28, 28))
+                                    icon=folium.CustomIcon(
+                                        WORSHIP_ICON_URL, icon_size=(28, 28)
+                                    ),
                                 ).add_to(poi_group)
                         elif poi_type == "Non-Profits":
                             for row in nonprofit_df.itertuples(index=False):
@@ -1133,17 +1259,23 @@ with tab3:
                                     [row.latitude, row.longitude],
                                     popup=f"{row.Name}<br>{row.Address}",
                                     tooltip=row.Name,
-                                    icon=folium.CustomIcon(NONPROFIT_ICON_URL, icon_size=(24, 24))
+                                    icon=folium.CustomIcon(
+                                        NONPROFIT_ICON_URL, icon_size=(24, 24)
+                                    ),
                                 ).add_to(poi_group)
                         else:
                             dfp = liquor_df[liquor_df["TYPE"] == poi_type]
-                            style = POI_STYLE_MAP.get(poi_type, {"color": "gray", "icon": "info-sign"})
+                            style = POI_STYLE_MAP.get(
+                                poi_type, {"color": "gray", "icon": "info-sign"}
+                            )
                             for row in dfp.itertuples(index=False):
                                 folium.Marker(
                                     [row.latitude, row.longitude],
-                                    popup=f'{row.NAME} ({poi_type})',
+                                    popup=f"{row.NAME} ({poi_type})",
                                     tooltip=row.NAME,
-                                    icon=folium.Icon(color=style["color"], icon=style["icon"])
+                                    icon=folium.Icon(
+                                        color=style["color"], icon=style["icon"]
+                                    ),
                                 ).add_to(poi_group)
                     poi_group.add_to(m)
 
@@ -1151,16 +1283,24 @@ with tab3:
                     legend_lines = ["<b>POI Legend</b><br>"]
                     for poi_type in selected_poi_types:
                         if poi_type == "Schools":
-                            legend_lines.append(f'<img src="{SCHOOL_ICON_URL}" width="14"> Schools<br>')
+                            legend_lines.append(
+                                f'<img src="{SCHOOL_ICON_URL}" width="14"> Schools<br>'
+                            )
                         elif poi_type == "Places of Worship":
-                            legend_lines.append(f'<img src="{WORSHIP_ICON_URL}" width="16"> Places of Worship<br>')
+                            legend_lines.append(
+                                f'<img src="{WORSHIP_ICON_URL}" width="16"> Places of Worship<br>'
+                            )
                         elif poi_type == "Non-Profits":
-                            legend_lines.append(f'<img src="{NONPROFIT_ICON_URL}" width="16"> Non-Profits<br>')
+                            legend_lines.append(
+                                f'<img src="{NONPROFIT_ICON_URL}" width="16"> Non-Profits<br>'
+                            )
                         else:
                             style = POI_STYLE_MAP.get(poi_type, {})
                             color = style.get("color", "gray")
                             icon = style.get("icon", "info-sign")
-                            legend_lines.append(f'<i class="glyphicon glyphicon-{icon}" style="color:{color}"></i> {poi_type}<br>')
+                            legend_lines.append(
+                                f'<i class="glyphicon glyphicon-{icon}" style="color:{color}"></i> {poi_type}<br>'
+                            )
 
                     poi_legend_html = f"""
                     <div style="
@@ -1169,14 +1309,14 @@ with tab3:
                         z-index: 9999; font-size: 13px; padding: 12px 14px;
                         box-shadow: 0 2px 8px rgba(0,0,0,0.12);
                     ">
-                    <span style="color:#222;">{''.join(legend_lines)}</span>
+                    <span style="color:#222;">{"".join(legend_lines)}</span>
                     </div>
                     """
                     m.get_root().html.add_child(folium.Element(poi_legend_html))
 
                 # Incidents: heatmap or clusters
                 if heatmap_enabled:
-                    heat_list = filtered_data[['latitude', 'longitude']].values.tolist()
+                    heat_list = filtered_data[["latitude", "longitude"]].values.tolist()
                     if heat_list:
                         HeatMap(heat_list).add_to(m)
                 else:
@@ -1187,9 +1327,12 @@ with tab3:
                         popup_text = f"{row.Date}<br>{row.category}"
                         folium.CircleMarker(
                             location=(row.latitude, row.longitude),
-                            radius=6, color="#808080", fill=True,
-                            fill_color="#F2E8CF", fill_opacity=0.8,
-                            popup=popup_text
+                            radius=6,
+                            color="#808080",
+                            fill=True,
+                            fill_color="#F2E8CF",
+                            fill_opacity=0.8,
+                            popup=popup_text,
                         ).add_to(marker_cluster)
                     cluster_group.add_to(m)
 
@@ -1199,16 +1342,21 @@ with tab3:
             st_data = st_folium(m, width="100%", height=700)
 
         else:
-            st.warning("No data to display for the selected filters. Try adjusting the year or category selection.")
+            st.warning(
+                "No data to display for the selected filters. Try adjusting the year or category selection."
+            )
 
         # Footer
-        st.markdown("""
+        st.markdown(
+            """
 <div class="app-footer">
     Lawrence Police Incidents Dashboard &nbsp;&middot;&nbsp;
     Data: <a href="https://www.lawpd.com/DocumentCenter/Index/237">Lawrence PD Daily Logs</a> &nbsp;&middot;&nbsp;
     Built with <a href="https://streamlit.io">Streamlit</a>
 </div>
-""", unsafe_allow_html=True)
+""",
+            unsafe_allow_html=True,
+        )
 
     else:
         st.sidebar.empty()
