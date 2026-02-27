@@ -1,0 +1,395 @@
+base_charge,total_count,category,charge_class
+"license suspended, op mv with",696,Motor Vehicle,Misdemeanor
+unlicensed operation of mv,603,Motor Vehicle,Misdemeanor
+"drug, possess class a",524,Drug Offense,Misdemeanor
+disorderly conduct,453,Public Order,Misdemeanor
+"drug, possess class b",420,Drug Offense,Misdemeanor
+resisting arrest,381,Obstruction of Justice,Misdemeanor
+trespass,257,Public Order,Misdemeanor
+assault w/dangerous weapon,232,Assault/Battery,Felony
+"drug, distribute class a",225,Drug Offense,Felony
+oui liquor,212,Motor Vehicle,Misdemeanor
+a&b,203,Assault/Battery,Misdemeanor
+"stop/yield, fail to",198,Motor Vehicle,Misdemeanor
+a&b with dangerous weapon,198,Assault/Battery,Felony
+unregistered motor vehicle,193,Motor Vehicle,Misdemeanor
+uninsured mv/trailer,191,Motor Vehicle,Misdemeanor
+shoplifting by asportation,187,Theft/Larceny,Misdemeanor
+threat to commit crime,178,Public Order,Either
+"firearm, carry without license",168,Firearm Offense,Either
+any person trafficks fentanyl more than 10 grams,162,Drug Offense,Felony
+larceny under $1200,162,Theft/Larceny,Misdemeanor
+marked lanes violation,150,Motor Vehicle,Misdemeanor
+fugitive from justice on court warrant,149,Fugitive/Warrant,Either
+"stop for police, fail",147,Motor Vehicle,Misdemeanor
+"motor veh, receive stolen",147,Motor Vehicle,Either
+reckless operation of motor vehicle,146,Motor Vehicle,Misdemeanor
+"drug, possess to distrib class b",138,Drug Offense,Felony
+leave scene of property damage,133,Motor Vehicle,Misdemeanor
+sexual conduct for fee,131,Sex Offense,Misdemeanor
+a&b on police officer,129,Assault/Battery,Felony
+b&e nighttime for felony,127,Breaking & Entering,Felony
+"drug, distribute class b",121,Drug Offense,Felony
+"drug, possess to distrib class a",112,Drug Offense,Felony
+carrying a loaded firearm,111,Firearm Offense,Felony
+larceny over $1200,111,Theft/Larceny,Felony
+trafficking class a: 28+ grams,106,Drug Offense,Felony
+speeding,106,Motor Vehicle,Misdemeanor
+shoplifting by concealing mdse,99,Theft/Larceny,Misdemeanor
+"false id info, arrst furni to law enf",92,Fraud/Financial,Misdemeanor
+"drug, possess class e",90,Drug Offense,Misdemeanor
+"motor veh, malicious damage to",83,Motor Vehicle,Either
+unlawful possession ammo no fid,80,Firearm Offense,Misdemeanor
+"firearm without fid card, possess",78,Firearm Offense,Either
+"destruction of prop -$1200, malicious",74,Property Destruction,Misdemeanor
+disturbing the peace,70,Public Order,Misdemeanor
+"alcohol from open container in mv, drink",68,Motor Vehicle,Misdemeanor
+larceny from building,67,Theft/Larceny,Either
+conspiracy to violate drug law,65,Drug Offense,Either
+"motor veh, larceny of",64,Motor Vehicle,Felony
+drinking in public,63,Public Order,Misdemeanor
+negligent operation of motor vehicle,60,Motor Vehicle,Misdemeanor
+receive stolen property -$1200,59,Theft/Larceny,Either
+"inspection/sticker, no",57,Motor Vehicle,Misdemeanor
+"destruction of prop +$1200, malicious",55,Property Destruction,Felony
+defacement malicious wanton property,55,Property Destruction,Either
+"registration suspended, op mv with",54,Motor Vehicle,Misdemeanor
+unlawful improper storage of firearm,53,Firearm Offense,Misdemeanor
+attempt to commit crime,53,Attempt,Either
+attaching wrong mv plates,51,Motor Vehicle,Misdemeanor
+"dangerous weapon, carry",51,Weapons,Either
+trafficking class b: 28+ grams,50,Drug Offense,Felony
+"wit/juror/pol/court official, intimidate",50,Obstruction of Justice,Felony
+b&e daytime for felony,50,Breaking & Entering,Felony
+"check, utter false",50,Fraud/Financial,Felony
+"firearm, discharge within 500 ft of bldg",49,Firearm Offense,Misdemeanor
+b&e for misdemeanor,48,Breaking & Entering,Misdemeanor
+a&b on family / household member,47,Assault/Battery,Misdemeanor
+trafficking class a: 200+ grams,46,Drug Offense,Felony
+number plate violation to conceal id,46,Motor Vehicle,Misdemeanor
+"lights violation, mv",46,Motor Vehicle,Misdemeanor
+number plate violation,43,Motor Vehicle,Misdemeanor
+"drug, possess to distrib class unknown",43,Drug Offense,Felony
+"police officer, interfere with (common law)",42,Obstruction of Justice,Misdemeanor
+receive stolen property +$1200,41,Theft/Larceny,Felony
+"check, forgery of",41,Fraud/Financial,Felony
+"rmv document, forge/misuse",39,Motor Vehicle,Misdemeanor
+"identify self, mv operator refuse",39,Motor Vehicle,Misdemeanor
+"robbery, armed",38,Robbery,Felony
+defective equipment,37,Motor Vehicle,Misdemeanor
+"noisy and disorderly house, keep",37,Public Order,Misdemeanor
+oui drugs,37,Motor Vehicle,Misdemeanor
+window obstructed/nontransparent,35,Motor Vehicle,Misdemeanor
+identity fraud,34,Fraud/Financial,Felony
+trafficking class a: 100+ grams,33,Drug Offense,Felony
+"drug, possess to distrib class d",33,Drug Offense,Felony
+"assault to murder, armed",33,Violent Crime - Homicide,Felony
+assault,30,Assault/Battery,Misdemeanor
+miscellaneous municipal ordinance/bylaw violation,30,Public Order,Misdemeanor
+in control of large capacity weapon,29,Firearm Offense,Felony
+"license revoked as hto, operate mv with",29,Motor Vehicle,Misdemeanor
+improper operation of mv,29,Motor Vehicle,Misdemeanor
+"harassment prevention order, violate",28,Protective Order Violation,Misdemeanor
+larceny from person,28,Theft/Larceny,Either
+drug violation near school/park,27,Drug Offense,Felony
+possession of ammunition,27,Firearm Offense,Misdemeanor
+"burglarious instrument, possess",26,Breaking & Entering,Misdemeanor
+leave scene of personal injury,25,Motor Vehicle,Either
+use mv without authority,24,Motor Vehicle,Misdemeanor
+"robbery, unarmed",23,Robbery,Felony
+conspiracy,23,Conspiracy,Either
+firearm use in felony,22,Firearm Offense,Felony
+"equipment violation, miscellaneous mv",22,Motor Vehicle,Misdemeanor
+"signal, fail to",21,Motor Vehicle,Misdemeanor
+trafficking class b: 100+ grams,21,Drug Offense,Felony
+firearm without fid card,21,Firearm Offense,Either
+trafficking class b: 200+ grams,20,Drug Offense,Felony
+"electronic device, use while operating mv",19,Motor Vehicle,Misdemeanor
+"rmv document, possess/use false/stolen",18,Motor Vehicle,Misdemeanor
+"heroin/morphine/opium, trafficking in",18,Drug Offense,Felony
+municipal by-law or ordinance violation,18,Public Order,Misdemeanor
+assault to murder,17,Violent Crime - Homicide,Felony
+strangulation or suffocation,17,Assault/Battery,Felony
+credit card fraud under $1200,17,Fraud/Financial,Misdemeanor
+"abuse prevention order, violate",17,Protective Order Violation,Either
+kidnapping,16,Violent Crime - Kidnapping,Felony
+sex offender fail to register,16,Sex Offense,Misdemeanor
+snow/rec veh helmet violation,15,Motor Vehicle,Misdemeanor
+firearm within 500 ft of dwelling,15,Firearm Offense,Misdemeanor
+speeding in violation special regulation,15,Motor Vehicle,Misdemeanor
+reckless endangerment to children,15,Public Order,Either
+license not in possession,15,Motor Vehicle,Misdemeanor
+"drug, possess class c",15,Drug Offense,Misdemeanor
+"cocaine, trafficking in - over 14 grams",15,Drug Offense,Felony
+a&b domestic no 209a in effect,14,Assault/Battery,Misdemeanor
+operating to endanger (ote),14,Motor Vehicle,Misdemeanor
+"heroin, possess",14,Drug Offense,Misdemeanor
+a&b on ambulance personnel,14,Assault/Battery,Felony
+larceny over $1200 by single scheme,14,Theft/Larceny,Felony
+fugitive from justice on gov's warrant,13,Fugitive/Warrant,Either
+"feeding device, possess large capacity",13,Firearm Offense,Felony
+disguise to obstruct justice,13,Obstruction of Justice,Misdemeanor
+shoplifting $250+ by asportation,13,Theft/Larceny,Felony
+home invasion,13,Breaking & Entering,Felony
+a&b on +60/disabled,13,Assault/Battery,Felony
+"destruction of prop -$1200, wanton",12,Property Destruction,Misdemeanor
+possession of a knife over 2 1/2 inches,12,Weapons,Misdemeanor
+"lewdness, open and gross",12,Sex Offense,Misdemeanor
+juror fail to attend,12,Obstruction of Justice,Misdemeanor
+receive stolen property,12,Theft/Larceny,Either
+"seat belt, fail wear",12,Motor Vehicle,Misdemeanor
+"drug, possess to distrib class e",11,Drug Offense,Felony
+"firearm serial no., deface",11,Firearm Offense,Misdemeanor
+persons previously convicted of 1 violent crime,11,Violent Crime - Repeat Offender,Felony
+"credit card, improper use under $1200",11,Fraud/Financial,Misdemeanor
+"credit card, receive stolen",11,Fraud/Financial,Misdemeanor
+"robbery, armed & masked",11,Robbery,Felony
+larceny by check over $1200,11,Theft/Larceny,Felony
+one way street violation,10,Motor Vehicle,Misdemeanor
+"license/regis/plates, refuse produce",10,Motor Vehicle,Misdemeanor
+destruction of prop -$1200,10,Property Destruction,Misdemeanor
+larceny over $250 by false pretense,10,Theft/Larceny,Felony
+"license, false application for mv",10,Motor Vehicle,Misdemeanor
+"snow/rec veh public way, on",9,Motor Vehicle,Misdemeanor
+"turn, improper",9,Motor Vehicle,Misdemeanor
+accessory after the fact,9,Obstruction of Justice,Felony
+larceny under $1200 by single scheme,9,Theft/Larceny,Misdemeanor
+registration revoked op mv with,8,Motor Vehicle,Misdemeanor
+destruction of prop +$1200,8,Property Destruction,Felony
+mayhem,8,Assault/Battery,Felony
+carjacking,8,Robbery,Felony
+deface property,8,Property Destruction,Misdemeanor
+"dna database sample, refuse provide",8,Obstruction of Justice,Misdemeanor
+a&b on public employee,7,Assault/Battery,Felony
+"credit card, larceny of",7,Theft/Larceny,Misdemeanor
+"cocaine, possess to distribute",7,Drug Offense,Felony
+number plate violation to,7,Motor Vehicle,Misdemeanor
+crosswalk violation,6,Motor Vehicle,Misdemeanor
+unlawful carrying of firearms,6,Firearm Offense,Felony
+a&b : serious bodily injury,6,Assault/Battery,Felony
+assault w/dangerous weapon +65,6,Assault/Battery,Felony
+"destruction of prop +$1200, wanton",6,Property Destruction,Felony
+state hway traffic violation,6,Motor Vehicle,Misdemeanor
+forgery of document,6,Fraud/Financial,Felony
+a&b : pregnant victim,6,Assault/Battery,Felony
+probation supervision,6,Obstruction of Justice,Misdemeanor
+"yield at intersection, fail",6,Motor Vehicle,Misdemeanor
+"drug, distribute class d",6,Drug Offense,Misdemeanor
+"animal, cruelty to",6,Public Order,Misdemeanor
+"heroin, being present where kept",6,Drug Offense,Misdemeanor
+"cocaine, distribute",6,Drug Offense,Felony
+criminal harassment,6,Public Order,Either
+"insurance claim, false",5,Fraud/Financial,Misdemeanor
+a&b in the presence of a police officer,5,Assault/Battery,Misdemeanor
+"machine gun, possess",5,Firearm Offense,Felony
+tampering with evidence,5,Obstruction of Justice,Felony
+stalking,5,Public Order,Felony
+impeded operation,5,Motor Vehicle,Misdemeanor
+breakdown lane violation,5,Motor Vehicle,Misdemeanor
+resist arrest (common law),5,Obstruction of Justice,Misdemeanor
+"b&e daytime for felony, person in fear",5,Breaking & Entering,Felony
+receive stolen prop -$1200,5,Theft/Larceny,Either
+"motor veh, taking & stealing parts",5,Motor Vehicle,Misdemeanor
+"liquor, person under 21 possess",5,Public Order,Misdemeanor
+larceny under $250 by false pretense,5,Theft/Larceny,Misdemeanor
+snow/rec veh unsafe operation,4,Motor Vehicle,Misdemeanor
+moped violation,4,Motor Vehicle,Misdemeanor
+"bomb threat, false",4,Public Order,Felony
+"identify self, refuse",4,Motor Vehicle,Misdemeanor
+trespass with motor vehicle,4,Motor Vehicle,Misdemeanor
+"license class, operate mv in violation",4,Motor Vehicle,Misdemeanor
+"witness, retaliate against",4,Obstruction of Justice,Felony
+fugitive from justice without warrant,4,Fugitive/Warrant,Either
+intimidate,4,Public Order,Misdemeanor
+"license suspended for oui, oper mv with",4,Motor Vehicle,Misdemeanor
+"correctional institution, disturb",4,Obstruction of Justice,Misdemeanor
+"wit/juror/pol/crt official, intimdt agg",4,Obstruction of Justice,Felony
+"nightwalker, common",4,Public Order,Misdemeanor
+"drug, distribute class e",4,Drug Offense,Misdemeanor
+"credit card, forge or utter forged",4,Fraud/Financial,Felony
+a&b on correction officer,4,Assault/Battery,Felony
+"safety standards, mv not meeting rmv",4,Motor Vehicle,Misdemeanor
+"right lane, fail drive in",4,Motor Vehicle,Misdemeanor
+"license, exhibit another's",4,Motor Vehicle,Misdemeanor
+"drug, possess class d",4,Drug Offense,Misdemeanor
+utter false instrument,4,Fraud/Financial,Felony
+"thief, common & notorious",4,Theft/Larceny,Misdemeanor
+"firearm in vehicle, leave",4,Firearm Offense,Misdemeanor
+"crime report, false",4,Obstruction of Justice,Misdemeanor
+"counterfeit note, possess",4,Fraud/Financial,Felony
+"counterfeit drug, distribute",4,Drug Offense,Misdemeanor
+"license restriction, operate mv in viol",3,Motor Vehicle,Misdemeanor
+"firearms, trafficking in +19",3,Drug Offense,Felony
+snow/rec veh unregistered,3,Motor Vehicle,Misdemeanor
+a&b : on a child,3,Assault/Battery,Felony
+registration not in possession,3,Motor Vehicle,Misdemeanor
+a&b with dangerous weapon +60,3,Assault/Battery,Felony
+"horn violation, mv",3,Motor Vehicle,Misdemeanor
+"prostitute, solicit for",3,Sex Offense,Misdemeanor
+"witness, intimidate",3,Obstruction of Justice,Felony
+enter dwelling at night for felony,3,Breaking & Entering,Felony
+"fireworks, possess unlawful",3,Public Order,Misdemeanor
+"parole/pardon, fail file",3,Obstruction of Justice,Misdemeanor
+"firearm w/defaced no., possess in felony",3,Firearm Offense,Either
+"burglary, unarmed",3,Breaking & Entering,Felony
+"murder, attempted",3,Violent Crime - Homicide,Felony
+obscene matter to minor,3,Sex Offense,Felony
+murder,3,Violent Crime - Homicide,Felony
+passing violation,3,Motor Vehicle,Misdemeanor
+"liquor to person under 21, sell/deliver",3,Public Order,Misdemeanor
+"robbery +65, unarmed",3,Robbery,Felony
+credit card fraud over $1200,3,Fraud/Financial,Felony
+accessory before the fact,3,Obstruction of Justice,Felony
+"railroad track, walk/ride on",3,Public Order,Misdemeanor
+"assault to rob, armed",3,Robbery,Felony
+larceny by check under $1200,3,Theft/Larceny,Misdemeanor
+"brakes violation, mv",3,Motor Vehicle,Misdemeanor
+indecent exposure,2,Sex Offense,Misdemeanor
+snow/rec veh unsafe,2,Motor Vehicle,Misdemeanor
+alcohol from open container in mv,2,Motor Vehicle,Misdemeanor
+"school bus, fail stop for",2,Motor Vehicle,Misdemeanor
+"carjacking, armed",2,Robbery,Felony
+"headlights, fail dim",2,Motor Vehicle,Misdemeanor
+"assault in dwelling, armed",2,Assault/Battery,Felony
+a&b to collect loan,2,Assault/Battery,Misdemeanor
+"police horse/dog, mistreat/interfere",2,Obstruction of Justice,Misdemeanor
+child under 6 without carseat,2,Motor Vehicle,Misdemeanor
+a&b to intimidate,2,Assault/Battery,Misdemeanor
+"trespass notice, vandalize",2,Property Destruction,Misdemeanor
+state hway wrong way,2,Motor Vehicle,Misdemeanor
+"firearm w/defaced no., receive",2,Firearm Offense,Either
+abandon mv,2,Motor Vehicle,Misdemeanor
+dangerous weapon on school,2,Weapons,Felony
+unsafe operation of mv,2,Motor Vehicle,Misdemeanor
+"police officer, impersonate",2,Obstruction of Justice,Misdemeanor
+oui liquor & serious injury & reckless,2,Motor Vehicle,Misdemeanor
+"lewd, wanton & lascivious conduct",2,Sex Offense,Misdemeanor
+registration sticker not displayed,2,Motor Vehicle,Misdemeanor
+"firearms, trafficking in 3-9",2,Drug Offense,Felony
+"emergency vehicle, obstruct",2,Obstruction of Justice,Misdemeanor
+"liquor, person under 21",2,Public Order,Misdemeanor
+"drug paraphernalia, pos/pur to dist",2,Drug Offense,Misdemeanor
+"hypodermic, possess",2,Public Order,Misdemeanor
+marine fish striped bass viol,2,Public Order,Misdemeanor
+"marihuana, possess",2,Drug Offense,Misdemeanor
+persons previously convicted of 2 violent crimes,2,Violent Crime - Repeat Offender,Felony
+"taxi fare, evade",2,Public Order,Misdemeanor
+assault on ambulance personnel,2,Assault/Battery,Misdemeanor
+persons previously convicted of 3 violent crimes,2,Violent Crime - Repeat Offender,Felony
+assault on family / household member,2,Assault/Battery,Misdemeanor
+"keep right for oncoming mv, fail to",2,Motor Vehicle,Misdemeanor
+"recognizance, fail appear upon",2,Obstruction of Justice,Misdemeanor
+shoplifting $250+ by concealing mdse,2,Theft/Larceny,Felony
+"rmv signature, forge/misuse",2,Motor Vehicle,Misdemeanor
+arson of dwelling house,2,Arson,Felony
+affray (common law),2,Public Order,Misdemeanor
+larceny from person +65,2,Theft/Larceny,Either
+"fire call box, tamper with",2,Public Order,Misdemeanor
+"notes, possess worthless",2,Fraud/Financial,Misdemeanor
+2012 traff over 18grams,2,Drug Offense,Felony
+"body armor, use in felony",2,Weapons,Felony
+escape from dys,2,Obstruction of Justice,Misdemeanor
+"trash, litter",1,Public Order,Misdemeanor
+"telephone device, unlawful",1,Public Order,Misdemeanor
+larceny under $250,1,Theft/Larceny,Misdemeanor
+false name/ss# to law enforcement,1,Fraud/Financial,Misdemeanor
+extortion by threat of injury,1,Obstruction of Justice,Misdemeanor
+"wit/juror/pol/crt official, intimidate",1,Obstruction of Justice,Felony
+"drug, larceny of",1,Drug Offense,Felony
+"building, vandalize",1,Property Destruction,Misdemeanor
+extortion by false report of crime,1,Obstruction of Justice,Misdemeanor
+counterfeit drug,1,Drug Offense,Misdemeanor
+leave scene of personal injury causing death,1,Motor Vehicle,Either
+"note, forgery of bank",1,Fraud/Financial,Misdemeanor
+false statement under penalty of perjury,1,Obstruction of Justice,Misdemeanor
+"animal, fail report injury to",1,Public Order,Misdemeanor
+"strangulation or suffocation, serious bodily injury",1,Assault/Battery,Felony
+violation (unspecified),1,Miscellaneous,Misdemeanor
+assault to commit felony,1,Assault/Battery,Felony
+hunt/fish on posted property,1,Public Order,Misdemeanor
+"contempt, criminal (common law)",1,Obstruction of Justice,Misdemeanor
+motor veh in felony/larceny,1,Motor Vehicle,Felony
+shoplifting of shopping cart,1,Theft/Larceny,Misdemeanor
+"credit card, improper use over $1200",1,Fraud/Financial,Felony
+"number plate, misuse official",1,Motor Vehicle,Misdemeanor
+failure to display lic and reg following accident,1,Motor Vehicle,Misdemeanor
+trafficking in (unspecified),1,Drug Offense,Felony
+"suffocation, subsequent offense",1,Assault/Battery,Felony
+"trade secret, buy/sell/receive stolen",1,Fraud/Financial,Felony
+penalty of perjury,1,Obstruction of Justice,Misdemeanor
+"emergency vehicle, wilfully obstruct 3d",1,Obstruction of Justice,Misdemeanor
+"drug, obtain by fraud",1,Drug Offense,Felony
+kidnapping & endanger minor by relative,1,Violent Crime - Kidnapping,Felony
+"firefighter, interfere with",1,Obstruction of Justice,Misdemeanor
+"fish propagation area, interfere with",1,Public Order,Misdemeanor
+witness fail to appear,1,Obstruction of Justice,Misdemeanor
+property damage to intimidate,1,Public Order,Felony
+motor veh by-law violation,1,Motor Vehicle,Misdemeanor
+"snow/rec veh registration, fail produce",1,Motor Vehicle,Misdemeanor
+assault by means of dangerous weapon,1,Assault/Battery,Felony
+miscellaneous statutory,1,Public Order,Misdemeanor
+"dumpster, use of another's commercial",1,Public Order,Misdemeanor
+"arson of dwelling house, attempted",1,Arson,Felony
+hunt/fish without license,1,Public Order,Misdemeanor
+failure to obey traffic sign or signal,1,Motor Vehicle,Misdemeanor
+"assault to rob, unarmed",1,Robbery,Felony
+"credit card, false statement",1,Fraud/Financial,Misdemeanor
+registration sticker missing,1,Motor Vehicle,Misdemeanor
+kidnapping for extortion,1,Violent Crime - Kidnapping,Felony
+"tools, larceny of construction",1,Theft/Larceny,Misdemeanor
+"silencer, sell/use/possess firearm",1,Firearm Offense,Felony
+accost/annoy person of opposite sex,1,Public Order,Misdemeanor
+license suspended for oui,1,Motor Vehicle,Misdemeanor
+motor carrier safety violation,1,Motor Vehicle,Misdemeanor
+"prisoner, deliver drugs to",1,Obstruction of Justice,Misdemeanor
+"counterfeit note, utter",1,Fraud/Financial,Felony
+"juror, intimidate",1,Obstruction of Justice,Felony
+"burglary, armed & assault",1,Assault/Battery,Felony
+left lane restriction violation,1,Motor Vehicle,Misdemeanor
+"false pretense of trade, obtain goods by",1,Fraud/Financial,Misdemeanor
+burn motor vehicle,1,Motor Vehicle,Felony
+"park regulation viol, town",1,Public Order,Misdemeanor
+shoplifting by price tag tampering,1,Theft/Larceny,Misdemeanor
+"rape, aggravated",1,Sex Offense,Felony
+"red/blue light violation, mv",1,Motor Vehicle,Misdemeanor
+"snow/rec veh stop for police, fail",1,Motor Vehicle,Misdemeanor
+"license, false statement in application for mv",1,Motor Vehicle,Misdemeanor
+child 6-12 without seat belt,1,Motor Vehicle,Misdemeanor
+"rmv document, possess/use",1,Motor Vehicle,Misdemeanor
+"firearm, larceny of",1,Firearm Offense,Felony
+break into depository,1,Breaking & Entering,Felony
+"telephone calls, annoying",1,Public Order,Misdemeanor
+"animal, cruelty to by",1,Public Order,Misdemeanor
+snow/rec vehicle violation,1,Motor Vehicle,Misdemeanor
+"truck, b&e for felony",1,Breaking & Entering,Felony
+"height, operate mv with modified",1,Motor Vehicle,Misdemeanor
+rmv id card fraud,1,Motor Vehicle,Misdemeanor
+"methamphetamine, trafficking in",1,Drug Offense,Felony
+drug violation 100' of park or playground,1,Drug Offense,Felony
+use of mobile telephone or device under 18,1,Motor Vehicle,Misdemeanor
+"restaurant, defraud",1,Fraud/Financial,Misdemeanor
+indecent a&b on person 14 or over,1,Assault/Battery,Felony
+"shotgun, possess sawed-off",1,Firearm Offense,Felony
+threat /dangerous item/ hijack,1,Public Order,Misdemeanor
+manslaughter,1,Violent Crime - Homicide,Felony
+receive false-traded property +$1200,1,Theft/Larceny,Felony
+rmv id card address change,1,Motor Vehicle,Misdemeanor
+motorcycle equipment violation,1,Motor Vehicle,Misdemeanor
+"drug, possess to distrib class c",1,Drug Offense,Felony
+"innkeeper, defraud, over $100",1,Fraud/Financial,Misdemeanor
+trespass with firearm,1,Firearm Offense,Misdemeanor
+burn personalty,1,Arson,Felony
+m/v homicide by reckless op,1,Motor Vehicle,Felony
+a&b on child with substantial injury,1,Assault/Battery,Felony
+hang onto mv,1,Motor Vehicle,Misdemeanor
+"tramp, threats by",1,Public Order,Misdemeanor
+assault by means hypodermic syringe,1,Assault/Battery,Felony
+escape from municipal lockup,1,Obstruction of Justice,Misdemeanor
+contribute to delinquency of child,1,Public Order,Misdemeanor
+"rmv signature, possess/use false/stolen",1,Motor Vehicle,Misdemeanor
+oui liquor or .08%,1,Motor Vehicle,Either
+"dangerous weapon on school grounds,carry",1,Weapons,Felony
+"motor veh vin, remove/alter",1,Motor Vehicle,Misdemeanor
+"school, disturb",1,Public Order,Misdemeanor
+"rape of child, statutory",1,Sex Offense,Felony
+"fugitive, fail bring before court",1,Fugitive/Warrant,Either

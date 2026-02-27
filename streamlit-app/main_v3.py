@@ -338,7 +338,7 @@ def load_data():
 
 @st.cache_data
 def load_charge_data():
-    csv_path = os.path.join(SCRIPT_DIR, "..", "scripts", "charges", "unique_charges_standardized.csv")
+    csv_path = os.path.join(SCRIPT_DIR, "unique_charges_standardized.csv")
     return pd.read_csv(csv_path)
 
 

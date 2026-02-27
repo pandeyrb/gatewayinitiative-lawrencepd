@@ -6,6 +6,7 @@ config.json
 !liquor_retail_geocoded.csv
 !school_geocoded.csv
 !places_of_worship_geocoded.csv
+!unique_charges_standardized.csv
 tl_2024_25_tractdata/
 *.duckdb
 *.duckdb.wal
