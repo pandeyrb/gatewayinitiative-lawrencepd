@@ -1,18 +1,12 @@
 import streamlit as st
 import streamlit.components.v1 as components
 import pandas as pd
-import numpy as np
 import plotly.express as px
 import folium
 from folium.plugins import MarkerCluster, HeatMap
 from streamlit_folium import st_folium
-from pathlib import Path
 import os
 import json
-from folium import Element
-from shapely.geometry import Polygon, Point, shape
-import geopandas as gpd
-from branca.colormap import linear
 import duckdb
 
 
@@ -478,7 +472,6 @@ def filter_data_duckdb(selected_years, selected_incidents, serious_crime_filter)
     return df
 
 
-@st.cache_data
 def filter_data_pandas(data, selected_years, selected_incidents, serious_crime_filter):
     """Fallback: filter with pandas boolean indexing."""
     if "All" in selected_incidents:
@@ -966,18 +959,7 @@ with tab3:
         )
         all_years = sorted(data["year"].unique().tolist())
 
-    # Pre-load boundary GeoJSON + choropleth DataFrames
-    poverty_geojson = load_boundary("poverty_boundary.geojson")
-    unemployment_geojson = load_boundary("unemployment_boundary.geojson")
-    household_income_geojson = load_boundary("household_income_boundary.geojson")
-    median_age_geojson = load_boundary("median_age_boundary.geojson")
-
-    poverty_choro_df = build_choropleth_df(poverty_geojson, "Estimate")
-    unemployment_choro_df = build_choropleth_df(unemployment_geojson, "Estimate")
-    household_income_choro_df = build_choropleth_df(
-        household_income_geojson, "Estimate"
-    )
-    median_age_choro_df = build_choropleth_df(median_age_geojson, "MedianAge")
+    # Choropleth data is loaded lazily below, after the overlay selector is rendered
 
     # -----------------------------
     # SIDEBAR CONTROLS
@@ -990,7 +972,7 @@ with tab3:
                 selected_year = st.multiselect(
                     "Year(s)",
                     all_years,
-                    default=all_years,
+                    default=[2022, 2023, 2024],
                     help="Select one or more years to include.",
                 )
                 selected_incidents = st.multiselect(
@@ -1029,6 +1011,28 @@ with tab3:
                     secondary_choice == "Median Household Income"
                 )
                 median_age_layer_enabled = secondary_choice == "Median Age"
+
+            # Load choropleth data only when an overlay is actually selected
+            if poverty_layer_enabled:
+                poverty_geojson = load_boundary("poverty_boundary.geojson")
+                poverty_choro_df = build_choropleth_df(poverty_geojson, "Estimate")
+            elif unemployment_layer_enabled:
+                unemployment_geojson = load_boundary("unemployment_boundary.geojson")
+                unemployment_choro_df = build_choropleth_df(
+                    unemployment_geojson, "Estimate"
+                )
+            elif median_household_income_layer_enabled:
+                household_income_geojson = load_boundary(
+                    "household_income_boundary.geojson"
+                )
+                household_income_choro_df = build_choropleth_df(
+                    household_income_geojson, "Estimate"
+                )
+            elif median_age_layer_enabled:
+                median_age_geojson = load_boundary("median_age_boundary.geojson")
+                median_age_choro_df = build_choropleth_df(
+                    median_age_geojson, "MedianAge"
+                )
 
             with st.expander("Hotspot Analysis", expanded=False):
                 hotspot_enabled = st.toggle(
@@ -1326,7 +1330,7 @@ with tab3:
                     for row in filtered_data.itertuples(index=False):
                         popup_text = f"{row.Date}<br>{row.category}"
                         folium.CircleMarker(
-                            location=(row.latitude, row.longitude),
+                            location=(float(row.latitude), float(row.longitude)),
                             radius=6,
                             color="#808080",
                             fill=True,
@@ -1339,7 +1343,7 @@ with tab3:
                 folium.LayerControl().add_to(m)
 
             # Render map
-            st_data = st_folium(m, width="100%", height=700)
+            st_data = st_folium(m, width="100%", height=700, key="main_map")
 
         else:
             st.warning(
