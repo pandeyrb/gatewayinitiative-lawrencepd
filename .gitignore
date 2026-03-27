@@ -10,6 +10,7 @@ config.json
 tl_2024_25_tractdata/
 *.duckdb
 *.duckdb.wal
+.settings.local.json
 
 # Checkpoint subject to change as we update the data
 !checkpoint15_misdemeanor_warrant.csv
