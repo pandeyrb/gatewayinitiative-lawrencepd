@@ -1,9 +1,6 @@
-# --only-binary=:all: is required on Render free tier (0.1 CPU cannot compile from source)
-# Remove this line when upgraded to Starter or above
---only-binary=:all:
 --only-binary=:all:
 streamlit==1.45.1
-pandas==2.1.4
+pandas==2.2.2
 plotly==5.24.1
 folium==0.19.7
 streamlit-folium==0.25.0
