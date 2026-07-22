@@ -690,13 +690,13 @@ def set_tab(tab_name):
 
 
 # Tabs
-tab1, tab2, tab3 = st.tabs(["About the Project", "Data Trends", "Spatial Insights"])
+tab_map, tab_trends, tab_about = st.tabs(["Explore the Map", "Data Trends", "About the Project"])
 
 
 # =============================================================
 # TAB 1 — ABOUT THE PROJECT
 # =============================================================
-with tab1:
+with tab_about:
     set_tab("About the Project")
 
     # Hero section
@@ -737,7 +737,7 @@ and the impact of policy changes.</p>
         st.markdown(
             """
 <div class="info-card">
-<h4>Spatial Insights</h4>
+<h4>Explore the Map</h4>
 <p>Interactive maps with heatmaps, hotspot analysis, and points of interest
 show <em>where</em> incidents concentrate.</p>
 </div>""",
@@ -838,7 +838,7 @@ Serious crimes highlight higher-harm and higher-risk events:
 # =============================================================
 # TAB 2 — DATA TRENDS
 # =============================================================
-with tab2:
+with tab_trends:
     set_tab("Data Trends")
 
     if st.session_state.active_tab == "Data Trends":
@@ -956,8 +956,8 @@ with tab2:
 # =============================================================
 # TAB 3 — SPATIAL INSIGHTS
 # =============================================================
-with tab3:
-    set_tab("Spatial Insights")
+with tab_map:
+    set_tab("Explore the Map")
 
     # Detect whether DuckDB is available
     use_db = _use_duckdb()
@@ -986,7 +986,7 @@ with tab3:
     # -----------------------------
     # SIDEBAR CONTROLS
     # -----------------------------
-    if st.session_state.active_tab == "Spatial Insights":
+    if st.session_state.active_tab == "Explore the Map":
         with st.sidebar:
             st.markdown("## Map Controls")
 
