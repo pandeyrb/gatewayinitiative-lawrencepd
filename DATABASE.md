@@ -6,8 +6,7 @@ before touching `streamlit-app/main_v3.py`.
 
 ## 1. Overview
 
-The app used to load `checkpoint15_misdemeanor_warrant.csv` directly into a pandas DataFrame on every run. That CSV currently holds **~424,000 rows** and grows over
-time, and reloading it on every filter change was slow.
+The app used to load `checkpoint15_misdemeanor_warrant.csv` directly into a pandas DataFrame on every run. That CSV currently holds **~424,000 rows** and grows over time, and reloading it on every filter change was slow.
 
 `streamlit-app/db_setup.py` converts that CSV into a **DuckDB** database
 (`streamlit-app/incidents.duckdb`) — a single-file, indexed, SQL-queryable database.
