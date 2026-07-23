@@ -3,11 +3,12 @@ import streamlit.components.v1 as components
 import pandas as pd
 import plotly.express as px
 import folium
-from folium.plugins import MarkerCluster, HeatMap
+from folium.plugins import HeatMap, FastMarkerCluster
 from streamlit_folium import st_folium
 import os
 import json
 import duckdb
+from datetime import date
 
 
 # =============================================================
@@ -510,6 +511,88 @@ def filter_data_pandas(data, selected_years, selected_incidents, serious_crime_f
     return filtered
 
 
+# --- KPI summary helpers ---
+# The KPI row only shows numbers actually derived from the filtered results —
+# filter selections themselves are rendered separately as a plain-language caption.
+
+
+def _format_filter_caption(selected_years, selected_incidents, serious_crime_filter):
+    """Plain-language summary of the current filter state, e.g.
+    'Showing 2022-2024 - all categories - all severities'."""
+    years_sorted = sorted(int(y) for y in selected_years)
+    if not years_sorted:
+        year_part = "no years selected"
+    elif len(years_sorted) == 1:
+        year_part = str(years_sorted[0])
+    elif years_sorted == list(range(years_sorted[0], years_sorted[-1] + 1)):
+        year_part = f"{years_sorted[0]}-{years_sorted[-1]}"
+    else:
+        year_part = ", ".join(str(y) for y in years_sorted)
+
+    if "All" in selected_incidents:
+        cat_part = "all categories"
+    elif len(selected_incidents) <= 2:
+        cat_part = " & ".join(selected_incidents).lower()
+    else:
+        cat_part = f"{len(selected_incidents)} categories selected"
+
+    severity_map = {
+        "All": "all severities",
+        "Serious Only": "serious only",
+        "Non-Serious Only": "non-serious only",
+    }
+    severity_part = severity_map.get(serious_crime_filter, serious_crime_filter.lower())
+
+    return f"Showing {year_part} · {cat_part} · {severity_part}"
+
+
+def _calendar_days_in_years(selected_years):
+    """Full calendar day-count for the selected years, capping the current
+    year at today (since it isn't over yet)."""
+    today = date.today()
+    total_days = 0
+    for y in (int(y) for y in selected_years):
+        if y < today.year:
+            total_days += (date(y + 1, 1, 1) - date(y, 1, 1)).days
+        elif y == today.year:
+            total_days += (today - date(y, 1, 1)).days + 1
+    return total_days
+
+
+def _compute_kpi_stats(filtered_data, selected_years, selected_incidents, serious_crime_filter):
+    """Derive KPI tile values from the already-filtered incident data.
+
+    Only includes numbers that are genuine outputs of the query — not a
+    restatement of a filter the user just picked. The 'conditional' stat
+    picks the first non-circular option from: most common category (only
+    meaningful when all categories are included), busiest year (only when
+    multiple years are selected), serious-incident share (only when the
+    severity filter isn't already narrowed).
+    """
+    n_incidents = len(filtered_data)
+    stats = {"n_incidents": n_incidents, "daily_avg": None, "conditional": None}
+
+    if n_incidents == 0 or not selected_years:
+        return stats
+
+    total_days = _calendar_days_in_years(selected_years)
+    if total_days > 0:
+        avg = n_incidents / total_days
+        stats["daily_avg"] = f"{avg:.1f}" if avg < 10 else f"{avg:.0f}"
+
+    if "All" in selected_incidents:
+        top_category = filtered_data["category"].value_counts().idxmax()
+        stats["conditional"] = ("Most Common", top_category)
+    elif len(selected_years) >= 2:
+        busiest_year = int(filtered_data["year"].value_counts().idxmax())
+        stats["conditional"] = ("Busiest Year", str(busiest_year))
+    elif serious_crime_filter == "All":
+        pct = (filtered_data["crime_severity"] == "Serious").mean() * 100
+        stats["conditional"] = ("Serious Incidents", f"{pct:.0f}%")
+
+    return stats
+
+
 # --- Hotspot calculation ---
 
 
@@ -602,11 +685,46 @@ h3 { font-size: 1.15rem !important; font-weight: 600 !important; }
 /* Tighten default Streamlit padding */
 .block-container { padding-top: 2rem !important; padding-bottom: 1rem !important; }
 
-/* ---- Tab styling ---- */
-button[data-baseweb="tab"] {
+/* ---- Tab-style navigation ----
+   st.segmented_control() is used instead of st.tabs() (see the Python
+   comment above its call site for why), restyled here to read as
+   underlined tabs rather than a floating button group. */
+div[data-testid="stButtonGroup"] {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+div[data-baseweb="button-group"] {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid #e0e4e8 !important;
+    gap: 0.5rem !important;
+}
+button[data-testid^="stBaseButton-segmented_control"] {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 2px solid transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0.6rem 1.2rem !important;
+    color: #555 !important;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+button[data-testid^="stBaseButton-segmented_control"] p {
+    margin: 0 !important;
     font-size: 1rem !important;
     font-weight: 600 !important;
-    padding: 0.6rem 1.2rem !important;
+}
+button[data-testid^="stBaseButton-segmented_control"]:hover {
+    background: transparent !important;
+    color: #0079c1 !important;
+}
+button[data-testid="stBaseButton-segmented_controlActive"] {
+    color: #0079c1 !important;
+    border-bottom: 2px solid #0079c1 !important;
 }
 
 /* ---- Metric / KPI card ---- */
@@ -628,6 +746,26 @@ button[data-baseweb="tab"] {
 .kpi-card .kpi-label {
     font-size: 0.78rem; color: #666; text-transform: uppercase; letter-spacing: 0.04em;
     margin-top: 0.15rem;
+}
+
+/* ---- Sidebar multiselect tags — don't truncate long category names ----
+   The Year(s) field already grows to fit multiple tags stacked as
+   separate rows, but that's a different mechanism (more 28px-tall pills
+   wrapping) than one long label needing to wrap internally. To let a
+   single tag show 2+ lines, the pill itself needs height:auto instead of
+   its default fixed 28px — otherwise wrapped text just overflows past a
+   box that doesn't resize to match. */
+section[data-testid="stSidebar"] span[data-baseweb="tag"] {
+    height: auto !important;
+    min-height: 28px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+}
+section[data-testid="stSidebar"] span[data-baseweb="tag"] span[title] {
+    max-width: 210px !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
 }
 
 /* ---- Info card used on About tab ---- */
@@ -680,45 +818,56 @@ details summary {
 st.title("Lawrence Police Incidents Dashboard")
 st.caption("Exploring public safety patterns in Lawrence, MA  |  Data: 2018 -- 2024")
 
-# Initialize active_tab in session_state
-if "active_tab" not in st.session_state:
-    st.session_state.active_tab = "About Project"
+# Tab-style navigation. st.tabs() has no way to report which tab is
+# selected back to Python — every st.tabs() block runs on every rerun
+# regardless of which tab is visually active, which was leaking sidebar
+# widgets from inactive tabs into view. st.segmented_control() returns the
+# actual selection, so only the matching branch below runs at all.
+#
+# The widget is bound to session_state via `key` rather than re-passing a
+# session_state-derived `default` every rerun — doing the latter fights
+# Streamlit's own widget-state tracking and made the control stick on the
+# previously selected tab instead of switching.
+if "nav_tab" not in st.session_state:
+    st.session_state["nav_tab"] = "Explore the Map"
+if "last_active_tab" not in st.session_state:
+    st.session_state["last_active_tab"] = "Explore the Map"
 
-
-def set_tab(tab_name):
-    st.session_state.active_tab = tab_name
-
-
-# Tabs
-tab_map, tab_trends, tab_about = st.tabs(["Explore the Map", "Data Trends", "About the Project"])
-
+selection = st.segmented_control(
+    "Navigation",
+    ["Explore the Map", "Data Trends", "About"],
+    key="nav_tab",
+    label_visibility="collapsed",
+)
+if selection is None:
+    # Single-select segmented_control deselects on a second click of the
+    # active pill — fall back to the last known tab instead of a blank page.
+    active_tab = st.session_state["last_active_tab"]
+else:
+    active_tab = selection
+    st.session_state["last_active_tab"] = selection
 
 # =============================================================
 # TAB 1 — ABOUT THE PROJECT
 # =============================================================
-with tab_about:
-    set_tab("About the Project")
+if active_tab == "About":
 
-    # Hero section
+    # Hero section — plain text, not boxed: this is flowing prose, not a
+    # set of parallel/scannable items, so it doesn't need card chrome (the
+    # three feature cards below it are, and stay boxed).
+    st.subheader("About This Dashboard")
     st.markdown(
         """
-<div class="info-card" style="border-left-color: #0079c1;">
-<h4>About This Dashboard</h4>
-<p>
 The Lawrence Police Dashboard transforms publicly available daily police log data
 from the Lawrence Police Department into interactive visualizations. It highlights
-<strong>when, where, and what kinds</strong> of incidents occur, equipping residents,
+**when, where, and what kinds** of incidents occur, equipping residents,
 community organizations, and policymakers to understand public safety patterns and
 make informed decisions.
-</p>
-<p>
+
 By integrating socioeconomic and demographic context layers, we provide a deeper
 understanding of the influences on public safety, helping the community work
 together toward safer neighborhoods.
-</p>
-</div>
-""",
-        unsafe_allow_html=True,
+"""
     )
 
     # Three-column feature highlights
@@ -838,25 +987,21 @@ Serious crimes highlight higher-harm and higher-risk events:
 # =============================================================
 # TAB 2 — DATA TRENDS
 # =============================================================
-with tab_trends:
-    set_tab("Data Trends")
+elif active_tab == "Data Trends":
 
-    if st.session_state.active_tab == "Data Trends":
-        with st.sidebar:
-            st.markdown("## Data Trends")
-            viz_choice = st.selectbox(
-                "Choose a view",
-                [
-                    "Incidents Per Category",
-                    "Incidents Per Year",
-                    "Incidents Per Month",
-                    "Charge Analysis",
-                ],
-                index=0,
-                help="Tableau views have built-in filters. Charge Analysis uses pre-aggregated charge data.",
-            )
-    else:
-        viz_choice = None
+    # No sidebar for this tab (PREVIEW: Option A) — the Tableau embeds carry
+    # their own filters, so there's nothing else here for a sidebar to hold.
+    viz_choice = st.selectbox(
+        "Choose a view",
+        [
+            "Incidents Per Category",
+            "Incidents Per Year",
+            "Incidents Per Month",
+            "Charge Analysis",
+        ],
+        index=0,
+        help="Tableau views have built-in filters. Charge Analysis uses pre-aggregated charge data.",
+    )
 
     if viz_choice and viz_choice != "Charge Analysis":
         st.subheader(viz_choice)
@@ -956,8 +1101,7 @@ with tab_trends:
 # =============================================================
 # TAB 3 — SPATIAL INSIGHTS
 # =============================================================
-with tab_map:
-    set_tab("Explore the Map")
+elif active_tab == "Explore the Map":
 
     # Detect whether DuckDB is available
     use_db = _use_duckdb()
@@ -986,7 +1130,7 @@ with tab_map:
     # -----------------------------
     # SIDEBAR CONTROLS
     # -----------------------------
-    if st.session_state.active_tab == "Explore the Map":
+    if active_tab == "Explore the Map":
         with st.sidebar:
             st.markdown("## Map Controls")
 
@@ -1009,14 +1153,16 @@ with tab_map:
                     help="Filter by serious or non-serious classification.",
                 )
 
-            with st.expander("Map Layers", expanded=False):
-                heatmap_enabled = st.toggle(
-                    "Show Heatmap",
-                    value=False,
-                    help="Replace cluster markers with a continuous heatmap.",
-                )
+            st.markdown("**Map Style**")
+            heatmap_enabled = st.toggle(
+                "Show Heatmap",
+                value=False,
+                help="Replace cluster markers with a continuous heatmap.",
+            )
+
+            with st.expander("Neighborhood Data", expanded=False):
                 secondary_choice = st.selectbox(
-                    "Socioeconomic Overlay",
+                    "Choose a layer",
                     [
                         "None",
                         "Poverty Data",
@@ -1105,36 +1251,33 @@ with tab_map:
             )
 
         # --- KPI summary row ---
-        n_incidents = len(filtered_data)
-        year_range = (
-            f"{min(selected_year)}--{max(selected_year)}" if selected_year else "N/A"
+        # Filter selections are shown once, in plain language, as a caption —
+        # the tiles below only carry numbers derived from the results.
+        st.caption(
+            _format_filter_caption(selected_year, selected_incidents, serious_crime_filter)
         )
-        n_categories = len(set(filtered_data["category"])) if n_incidents else 0
-        severity_label = (
-            serious_crime_filter if serious_crime_filter != "All" else "All Severities"
+
+        kpi_stats = _compute_kpi_stats(
+            filtered_data, selected_year, selected_incidents, serious_crime_filter
+        )
+
+        kpi_tiles = [("Total Incidents", f"{kpi_stats['n_incidents']:,}")]
+        if kpi_stats["daily_avg"] is not None:
+            kpi_tiles.append(("Daily Average", f"≈{kpi_stats['daily_avg']}/day"))
+        if kpi_stats["conditional"] is not None:
+            kpi_tiles.append(kpi_stats["conditional"])
+
+        kpi_tiles_html = "".join(
+            f"""
+    <div class="kpi-card">
+        <div class="kpi-value">{value}</div>
+        <div class="kpi-label">{label}</div>
+    </div>"""
+            for label, value in kpi_tiles
         )
 
         st.markdown(
-            f"""
-<div class="kpi-row">
-    <div class="kpi-card">
-        <div class="kpi-value">{n_incidents:,}</div>
-        <div class="kpi-label">Total Incidents</div>
-    </div>
-    <div class="kpi-card">
-        <div class="kpi-value">{year_range}</div>
-        <div class="kpi-label">Year Range</div>
-    </div>
-    <div class="kpi-card">
-        <div class="kpi-value">{n_categories}</div>
-        <div class="kpi-label">Categories</div>
-    </div>
-    <div class="kpi-card">
-        <div class="kpi-value">{severity_label}</div>
-        <div class="kpi-label">Severity Filter</div>
-    </div>
-</div>
-""",
+            f'<div class="kpi-row">{kpi_tiles_html}</div>',
             unsafe_allow_html=True,
         )
 
@@ -1348,18 +1491,39 @@ with tab_map:
                 else:
                     m.get_root().html.add_child(folium.Element(CUSTOM_CLUSTER_CSS_JS))
                     cluster_group = folium.FeatureGroup(name="Incident Clusters")
-                    marker_cluster = MarkerCluster().add_to(cluster_group)
-                    for row in filtered_data.itertuples(index=False):
-                        popup_text = f"{row.Date}<br>{row.category}"
-                        folium.CircleMarker(
-                            location=(float(row.latitude), float(row.longitude)),
-                            radius=6,
-                            color="#808080",
-                            fill=True,
-                            fill_color="#F2E8CF",
-                            fill_opacity=0.8,
-                            popup=popup_text,
-                        ).add_to(marker_cluster)
+
+                    # Build marker data with vectorized pandas ops and cluster
+                    # entirely client-side via FastMarkerCluster — building one
+                    # folium.CircleMarker Python object per row (the previous
+                    # approach) takes minutes once filtered_data reaches the
+                    # 100K+ row range (e.g. "All" categories across all years).
+                    popups = (
+                        filtered_data["Date"].astype(str)
+                        + "<br>"
+                        + filtered_data["category"].astype(str)
+                    )
+                    marker_data = (
+                        filtered_data[["latitude", "longitude"]]
+                        .assign(popup=popups)
+                        .values.tolist()
+                    )
+                    marker_callback = """
+                    function (row) {
+                        var marker = L.circleMarker(new L.LatLng(row[0], row[1]), {
+                            radius: 6,
+                            color: '#808080',
+                            weight: 1,
+                            fill: true,
+                            fillColor: '#F2E8CF',
+                            fillOpacity: 0.8
+                        });
+                        marker.bindPopup(row[2]);
+                        return marker;
+                    }
+                    """
+                    FastMarkerCluster(marker_data, callback=marker_callback).add_to(
+                        cluster_group
+                    )
                     cluster_group.add_to(m)
 
                 folium.LayerControl().add_to(m)
