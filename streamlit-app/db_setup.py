@@ -48,14 +48,14 @@ def build_database(csv_path: str, db_path: str) -> None:
             "Charges"       AS charges,
             CAST(latitude  AS DOUBLE) AS latitude,
             CAST(longitude AS DOUBLE) AS longitude,
-            "Cleaned Location" AS cleaned_location,
+            "Location" AS cleaned_location,
             person_id,
             category,
             "Year"          AS year,
             crime_severity,
             CAST("Age" AS DOUBLE) AS age,
             statutes,
-            standardized_charges,
+            cleaned_charges,
             CAST("has_warrant" AS BOOLEAN) AS has_warrant,
             CAST("is_misdemeanor" AS BOOLEAN) AS is_misdemeanor
         FROM read_csv_auto('{csv_path}', header=true, all_varchar=false)
@@ -132,7 +132,7 @@ def append_data(csv_path: str, db_path: str) -> None:
             crime_severity,
             CAST("Age" AS DOUBLE) AS age,
             statutes,
-            standardized_charges,
+            cleaned_charges,
             CAST("has_warrant" AS BOOLEAN) AS has_warrant,
             CAST("is_misdemeanor" AS BOOLEAN) AS is_misdemeanor
         FROM read_csv_auto('{csv_path}', header=true, all_varchar=false) AS new_data
