@@ -251,6 +251,15 @@ POI_STYLE_MAP = {
 SCHOOL_ICON_URL = "https://cdn-icons-png.flaticon.com/512/3135/3135810.png"
 WORSHIP_ICON_URL = "https://cdn-icons-png.flaticon.com/512/4258/4258470.png"
 NONPROFIT_ICON_URL = "https://cdn-icons-png.flaticon.com/512/1946/1946429.png"
+POLICE_ICON_PATH = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "icons", "police_station.png"
+)
+
+# Lawrence Police Department HQ — many incidents geocode here (e.g. bookings/
+# reports logged at the station), so this marker helps explain that cluster.
+POLICE_STATION_NAME = "Lawrence Police Department"
+POLICE_STATION_ADDRESS = "90 Lowell St, Lawrence, MA"
+POLICE_STATION_COORDS = (42.7081543, -71.1650694)
 
 POI_TYPES_LIST = [
     "Bar or Lounge",
@@ -1525,6 +1534,31 @@ elif active_tab == "Explore the Map":
                         cluster_group
                     )
                     cluster_group.add_to(m)
+
+                # Police station marker — always visible (not gated behind the
+                # POI toggle), and added last so it renders above incident
+                # markers even when a cluster sits directly on the station.
+                # icon_anchor floats the badge a fixed number of *screen*
+                # pixels above the true coordinate (rather than nudging the
+                # coordinate itself), so it never covers the incident-count
+                # bubble at that point regardless of zoom level, while still
+                # staying visually anchored to the same building.
+                folium.Marker(
+                    list(POLICE_STATION_COORDS),
+                    popup=(
+                        f"{POLICE_STATION_NAME}<br>{POLICE_STATION_ADDRESS}"
+                        "<br><i>Incidents processed or reported here are "
+                        "often geocoded to this address.</i>"
+                    ),
+                    tooltip=POLICE_STATION_NAME,
+                    icon=folium.CustomIcon(
+                        POLICE_ICON_PATH,
+                        icon_size=(30, 30),
+                        icon_anchor=(15, 65),
+                        popup_anchor=(0, -55),
+                    ),
+                    z_index_offset=1000,
+                ).add_to(m)
 
                 folium.LayerControl().add_to(m)
 
